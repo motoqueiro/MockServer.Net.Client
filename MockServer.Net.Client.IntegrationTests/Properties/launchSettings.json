@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "MockServer.Net.Client.IntegrationTests": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "MOCK_SERVER_URL": "localhost:32775"
+      }
+    }
+  }
+}
