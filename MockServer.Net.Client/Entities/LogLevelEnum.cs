@@ -1,4 +1,4 @@
-﻿namespace Storm.Pricing.Automation.Web.MockServer
+﻿namespace MockServer.Net.Client.Entities
 {
     public enum LogLevelEnum
     {

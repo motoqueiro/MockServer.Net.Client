@@ -1,4 +1,4 @@
-﻿namespace MockServer.Net.Client
+﻿namespace MockServer.Net.Client.Entities
 {
     public enum RetrieveTypeEnum
     {

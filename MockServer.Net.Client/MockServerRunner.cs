@@ -1,52 +1,20 @@
 ﻿namespace Storm.Pricing.Automation.Web.MockServer
 {
     using System;
-    using System.Collections.Generic;
     using System.Diagnostics;
     using System.IO;
     using System.Text;
-    using System.Threading.Tasks;
-    using global::MockServer.Net.Client;
+    using global::MockServer.Net.Client.Entities;
+    using global::MockServer.Net.Client.RunConfiguration;
 
     public class MockServerRunner
     {
-        private Process _process;
-        private readonly RestApiClient _client;
-
-        public MockServerRunner(
-            int? serverPort = null,
-            int? proxyPort = null,
-            int? proxyRemotePort = null,
-            string proxyRemoteHost = null,
-            LogLevelEnum? logLevel = null)
-        {
-            var arguments = BuildCommandLineArguments(
-                serverPort,
-                proxyPort,
-                proxyRemotePort,
-                proxyRemoteHost,
-                logLevel);
-            Debug.WriteLine(arguments);
-            this._process = new Process
-            {
-                StartInfo = new ProcessStartInfo
-                {
-                    WindowStyle = ProcessWindowStyle.Normal,
-#if RELEASE
-                    WindowStyle = ProcessWindowStyle.Hidden,
-#endif
-                    FileName = "java",
-                    Arguments = arguments,
-                    WorkingDirectory = this.ResolveMockServerPath()
-                }
-            };
-
-            var mockServerUrl = this.ResolveUrl(
-                proxyRemoteHost,
-                proxyPort);
-            Debug.WriteLine(mockServerUrl);
-            this._client = new RestApiClient(mockServerUrl);
-        }
+        private readonly Process _process;
+        private readonly int? _serverPort;
+        private readonly int? _proxyPort;
+        private readonly int? _proxyRemotePort;
+        private readonly string _proxyRemoteHost;
+        private readonly LogLevelEnum? _logLevel;
 
         /// <summary>
         /// Run MockServer from command line using java directly. As documented <see cref="http://www.mock-server.com/mock_server/running_mock_server.html#running_from_command_line_using_java">here</see>.
@@ -55,24 +23,49 @@
         /// <param name="proxyPort">Specifies the HTTP and HTTPS port for the MockServer.Port unification is used to support HTTP and HTTPS on the same port.</param>
         /// <param name="proxyRemotePort">Specifies the port to forward all proxy requests to(i.e.all requests received on portPort). This setting is used to enable the port forwarding mode therefore this option disables the HTTP, HTTPS, SOCKS and HTTP CONNECT support.</param>
         /// <param name="proxyRemoteHost">Specified the host to forward all proxy requests to(i.e.all requests received on portPort). This setting is ignored unless proxyRemotePort has been specified.If no value is provided for proxyRemoteHost when proxyRemotePort has been specified, proxyRemoteHost will default to "localhost".</param>
-        public void Start()
+        public MockServerRunner(
+            int? serverPort = null,
+            int? proxyPort = null,
+            int? proxyRemotePort = null,
+            string proxyRemoteHost = null,
+            LogLevelEnum? logLevel = null)
         {
+            this._serverPort = serverPort;
+            this._proxyPort = proxyPort;
+            this._proxyRemotePort = proxyRemotePort;
+            this._proxyRemoteHost = proxyRemoteHost;
+            this._logLevel = logLevel;
+            this._process = new Process();
+        }
+
+        public void Start(RunTypeEnum runType)
+        {
+            var configuration = this.BuildConfiguration(runType);
+            this._process.StartInfo = configuration.BuildStartInfo();
             this._process.Start();
         }
 
-        public async Task<IEnumerable<Tuple<string, Response>>> LoadExpectations()
+        public string ResolveUrl()
         {
-            var path = ResolveMockServerPath();
-            var expectationsPath = Path.Combine(path, "Expectations");
-            var results = new List<Tuple<string, Response>>();
-            foreach (var expectationFile in Directory.EnumerateFiles(expectationsPath, "*.json", SearchOption.AllDirectories))
+            var sb = new StringBuilder();
+            if (!string.IsNullOrEmpty(this._proxyRemoteHost))
             {
-                var expectationData = File.ReadAllText(expectationFile);
-                var response = await this._client.Expectation(expectationData);
-                results.Add(new Tuple<string, Response>(expectationFile, response));
+                sb.Append(this._proxyRemoteHost);
+                if (this._proxyRemotePort.HasValue)
+                {
+                    sb.AppendFormat(":{0}", this._proxyRemotePort);
+                }
+            }
+            else
+            {
+                sb.Append("http://localhost");
+                if (this._serverPort.HasValue)
+                {
+                    sb.AppendFormat(":{0}", this._serverPort);
+                }
             }
 
-            return results;
+            return sb.ToString();
         }
 
         public void Stop()
@@ -80,69 +73,41 @@
             this._process.Dispose();
         }
 
-        private string BuildCommandLineArguments(
-            int? serverPort,
-            int? proxyPort,
-            int? proxyRemotePort,
-            string proxyRemoteHost,
-            LogLevelEnum? logLevel)
+        private BaseConfiguration BuildConfiguration(RunTypeEnum runType)
         {
-            var sb = new StringBuilder();
-            if (logLevel.HasValue)
+            switch (runType)
             {
-                sb.AppendFormat(" -Dmockserver.logLevel={0}", logLevel.ToString());
+                case RunTypeEnum.Docker:
+                    return new DockerConfiguration(
+                        this._serverPort,
+                        this._proxyPort,
+                        this._proxyRemotePort,
+                        this._proxyRemoteHost,
+                        this._logLevel);
+                case RunTypeEnum.Maven:
+                    return new MavenConfiguration(
+                        this._serverPort,
+                        this._proxyPort,
+                        this._proxyRemotePort,
+                        this._proxyRemoteHost,
+                        this._logLevel);
+                case RunTypeEnum.Java:
+                    return new JavaConfiguration(
+                        this._serverPort,
+                        this._proxyPort,
+                        this._proxyRemotePort,
+                        this._proxyRemoteHost,
+                        this._logLevel);
+                case RunTypeEnum.Homebrew:
+                    return new HomebrewConfiguration(
+                        this._serverPort,
+                        this._proxyPort,
+                        this._proxyRemotePort,
+                        this._proxyRemoteHost,
+                        this._logLevel);
+                default:
+                    throw new SystemException($"Unsupported mockserver run type {runType.ToString()}");
             }
-;
-            sb.Append(" -jar mockserver-netty-5.2.3-jar-with-dependencies.jar");
-            if (serverPort.HasValue)
-            {
-                sb.AppendFormat(" -serverPort {0}", serverPort);
-            }
-
-            if (proxyPort.HasValue)
-            {
-                sb.AppendFormat(" -proxyPort {0}", proxyPort);
-            }
-
-            if (proxyRemotePort.HasValue)
-            {
-                sb.AppendFormat(" -proxyRemotePort {0}", proxyRemotePort);
-            }
-
-            if (!string.IsNullOrEmpty(proxyRemoteHost))
-            {
-                sb.AppendFormat(" -proxyRemoteHost {0}", proxyRemoteHost);
-            }
-
-            return sb.ToString();
-        }
-
-        private string ResolveMockServerPath()
-        {
-            var directory = Directory.GetCurrentDirectory();
-            return Path.Combine(directory, "MockServer");
-        }
-
-        private string ResolveUrl(
-            string proxyRemoteHost,
-            int? serverPort)
-        {
-            var sb = new StringBuilder();
-            if (string.IsNullOrEmpty(proxyRemoteHost))
-            {
-                sb.Append("http://localhost");
-            }
-            else
-            {
-                sb.Append(proxyRemoteHost);
-            }
-
-            if (serverPort.HasValue)
-            {
-                sb.AppendFormat(":{0}", serverPort);
-            }
-
-            return sb.ToString();
         }
     }
 }
