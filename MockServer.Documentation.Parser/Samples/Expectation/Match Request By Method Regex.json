@@ -1,0 +1,8 @@
+{
+ "httpRequest" : {
+ "method" : "P.*{2,3}"
+ },
+ "httpResponse" : {
+ "body" : "some_response_body"
+ }
+}

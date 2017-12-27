@@ -1,0 +1,11 @@
+[
+ {
+ "path": "/some/path/one"
+ },
+ {
+ "path": "/some/path/two"
+ },
+ {
+ "path": "/some/path/three"
+ }
+]

@@ -1,0 +1,24 @@
+{
+ "httpRequest": {
+ "path": "/some/path"
+ },
+ "httpResponseTemplate": {
+ "template": "return {\n" +
+ " 'statusCode': 200,\n" +
+ " 'cookies': {\n" +
+ " 'session' : request.headers['Session-Id'][0]\n" +
+ " },\n" +
+ " 'headers': {\n" +
+ " 'Date' : Date()\n" +
+ " },\n" +
+ " 'body': JSON.stringify(\n" +
+ " {\n" +
+ " method: request.method," +
+ " path: request.path," +
+ " body: request.body" +
+ " }\n" +
+ " )\n" +
+ "};",
+ "templateType": "JAVASCRIPT"
+ }
+}

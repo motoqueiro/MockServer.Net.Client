@@ -1,0 +1,18 @@
+{
+ "httpRequest" : {
+ "method" : "POST",
+ "headers" : {
+ "Content-Type" : [ "application/x-www-form-urlencoded" ]
+ },
+ "body" : {
+ "type" : "PARAMETERS",
+ "parameters" : {
+ "email" : [ "joe.blogs@gmail.com" ],
+ "password" : [ "secure_Password123" ]
+ }
+ }
+ },
+ "httpResponse" : {
+ "body" : "some_response_body"
+ }
+}

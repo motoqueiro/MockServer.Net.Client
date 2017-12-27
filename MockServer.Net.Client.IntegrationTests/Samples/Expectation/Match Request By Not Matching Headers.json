@@ -1,0 +1,12 @@
+{
+ "httpRequest" : {
+ "path" : "/some/path",
+ "headers" : {
+ "!Accept" : [ ".*" ],
+ "!Accept-Encoding" : [ ".*" ]
+ }
+ },
+ "httpResponse" : {
+ "body" : "some_response_body"
+ }
+}

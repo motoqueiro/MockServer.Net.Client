@@ -1,0 +1,12 @@
+{
+ "httpRequest" : {
+ "body" : {
+ "type": "STRING",
+ "string": "some_string",
+ "subString": true
+ }
+ },
+ "httpResponse" : {
+ "body" : "some_response_body"
+ }
+}

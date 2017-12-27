@@ -1,0 +1,8 @@
+{
+ "httpRequest" : {
+ "method" : "!GET"
+ },
+ "httpResponse" : {
+ "body" : "some_response_body"
+ }
+}

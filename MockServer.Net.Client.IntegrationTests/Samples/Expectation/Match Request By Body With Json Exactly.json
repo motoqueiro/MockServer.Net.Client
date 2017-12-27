@@ -1,0 +1,13 @@
+{
+ "httpRequest" : {
+ "body" : {
+ "type" : "JSON",
+ "json" : "{ \"id\": 1, \"name\": \"A green door\", \"price\": 12.50, \"tags\": [\"home\", \"green\"] }",
+ "matchType" : "STRICT"
+ }
+ },
+ "httpResponse" : {
+ "statusCode" : 202,
+ "body" : "some_response_body"
+ }
+}

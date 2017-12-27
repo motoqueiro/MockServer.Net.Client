@@ -2,22 +2,39 @@
 {
     using System.Collections;
     using NUnit.Framework;
+    using SimpleFixture;
 
     public class UnitTestCaseData
     {
-        public static IEnumerable SingleArgumentOkTestData
+        public static IEnumerable OkTestData
         {
             get
             {
-                yield return new TestCaseData("Expectation", 201, "expectation created", string.Empty)
+                var fixture = new Fixture();
+                yield return new TestCaseData("Expectation", 201, "expectation created", string.Empty, new[] { fixture.Generate<string>() })
                      .SetName("CreateExpectation_ShouldReturnCreated")
                      .SetCategory("Expectation");
-                yield return new TestCaseData("Expectation", 400, "incorrect request format", string.Empty)
+                yield return new TestCaseData("Expectation", 400, "incorrect request format", string.Empty, new[] { fixture.Generate<string>() })
                     .SetName("CreateExpectation_ShouldReturnBadRequest")
                     .SetCategory("Expectation");
-                yield return new TestCaseData("Expectation", 406, "invalid expectation", string.Empty)
+                yield return new TestCaseData("Expectation", 406, "invalid expectation", string.Empty, new[] { fixture.Generate<string>() })
                     .SetName("CreateExpectation_ShouldReturnNotAcceptable")
                     .SetCategory("Expectation");
+                yield return new TestCaseData("Reset", 200, "expectations and recorded requests cleared", string.Empty, null, null)
+                    .SetName("ResetRequest_ShouldReturnOk")
+                    .SetCategory("Reset");
+                yield return new TestCaseData("Retrieve", 200, "recorded requests or active expectations returned", null)
+                    .SetName("RetrieveRequest_ShouldReturnOk")
+                    .SetCategory("Retrieve");
+                yield return new TestCaseData("Retrieve", 400, "incorrect request format")
+                    .SetName("RetrieveRequest_ShouldReturBadRequest")
+                    .SetCategory("Retrieve");
+                yield return new TestCaseData("Status", 200, "MockServer is running and listening on the listed ports")
+                    .SetName("StatusRequest_ShouldReturnOk")
+                    .SetCategory("Status");
+                yield return new TestCaseData("Stop", 200, "MockServer process is stopping")
+                    .SetName("StopRequest_ShouldReturnOk")
+                    .SetCategory("Stop");
                 yield return new TestCaseData("Verify", 200, "matching request has been received specified number of times", string.Empty)
                     .SetName("VerifyRequest_ShouldReturnOk")
                     .SetCategory("Verify");
@@ -54,28 +71,6 @@
             }
         }
 
-        public static IEnumerable OkTestData
-        {
-            get
-            {
-                yield return new TestCaseData("Reset", 200, "expectations and recorded requests cleared", string.Empty)
-                    .SetName("ResetRequest_ShouldReturnOk")
-                    .SetCategory("Reset");
-                yield return new TestCaseData("Retrieve", 200, "recorded requests or active expectations returned", string.Empty)
-                    .SetName("RetrieveRequest_ShouldReturnOk")
-                    .SetCategory("Retrieve");
-                yield return new TestCaseData("Retrieve", 400, "incorrect request format", string.Empty)
-                    .SetName("RetrieveRequest_ShouldReturBadRequest")
-                    .SetCategory("Retrieve");
-                yield return new TestCaseData("Status", 200, "MockServer is running and listening on the listed ports", string.Empty)
-                    .SetName("StatusRequest_ShouldReturnOk")
-                    .SetCategory("Status");
-                yield return new TestCaseData("Stop", 200, "MockServer process is stopping", string.Empty)
-                    .SetName("StopRequest_ShouldReturnOk")
-                    .SetCategory("Stop");
-            }
-        }
-
         public static IEnumerable ExceptionTestData
         {
             get
@@ -92,13 +87,6 @@
                 yield return new TestCaseData("Stop")
                     .SetName("StopRequest_ShouldThrowException")
                     .SetCategory("Stop");
-            }
-        }
-
-        public static IEnumerable SingleArgumentExceptionTestData
-        {
-            get
-            {
                 yield return new TestCaseData("Expectation")
                     .SetName("CreateExpectation_ShouldThrowException")
                     .SetCategory("Expectation");

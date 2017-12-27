@@ -1,0 +1,16 @@
+{
+ "httpRequest": {"path": "/some/path"},
+ "httpResponseTemplate": {
+ "template": "{\n" +
+ " \"statusCode\": 200,\n" +
+ " \"cookies\": {\n" +
+ " \"session\": \"$!request.headers['Session-Id'][0]\"\n" +
+ " },\n" +
+ " \"headers\": {\n" +
+ " \"Client-User-Agent\": [ \"$!request.headers['User-Agent'][0]\" ]\n" +
+ " },\n" +
+ " \"body\": $!request.body\n" +
+ "}",
+ "templateType": "VELOCITY"
+ }
+}

@@ -105,13 +105,13 @@
         /// <returns></returns>
         public async Task<Response> Retrieve(
             string jsonData,
-            string format = "json",
-            string type = "requests")
+            RetrieveFormatEnum format = RetrieveFormatEnum.JSON,
+            RetrieveTypeEnum type = RetrieveTypeEnum.REQUESTS)
         {
             var httpResponse = await this._url
                 .AppendPathSegment("retrieve")
-                .SetQueryParam(nameof(format), format)
-                .SetQueryParam(nameof(type), type)
+                .SetQueryParam(nameof(format), format.ToString())
+                .SetQueryParam(nameof(type), type.ToString())
                 .PutJsonAsync(jsonData);
             return await this.ResolveResponse(nameof(Retrieve), httpResponse);
         }

@@ -1,0 +1,8 @@
+{
+ "httpRequest" : {
+ "path" : "/some.*"
+ },
+ "httpClassCallback" : {
+ "callbackClass" : "org.mockserver.examples.mockserver.CallbackActionExamples$TestExpectationCallback"
+ }
+}

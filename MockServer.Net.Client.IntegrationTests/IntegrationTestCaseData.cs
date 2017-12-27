@@ -6,11 +6,11 @@
 
     internal class IntegrationTestCaseData
     {
-        internal static IEnumerable RequestMatcher
+        internal static IEnumerable ExpectationsSource
         {
             get
             {
-                return LoadTestCaseData("Setup Expectations");
+                return LoadTestCaseData("Expectation");
             }
         }
 
@@ -18,15 +18,17 @@
         {
             var jsonDataDirectory = Path.Combine(
                 Directory.GetCurrentDirectory(),
-                "JsonData",
+                "Samples",
                 action);
             foreach (var fileName in Directory.GetFiles(jsonDataDirectory, "*.json"))
             {
                 var filePath = Path.Combine(
                     jsonDataDirectory,
                     fileName);
-                var jsonData = File.ReadAllTextAsync(filePath);
+                var jsonData = File.ReadAllText(filePath);
+                var testName = $"Integration Test - {action} - {Path.GetFileNameWithoutExtension(fileName)}";
                 yield return new TestCaseData(jsonData)
+                    .SetName(testName)
                     .SetCategory(action);
             }
         }

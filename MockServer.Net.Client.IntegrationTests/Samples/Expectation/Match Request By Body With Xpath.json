@@ -1,0 +1,11 @@
+{
+ "httpRequest" : {
+ "body" : {
+ "type" : "XPATH",
+ "xpath" : "/bookstore/book[price>30]/price"
+ }
+ },
+ "httpResponse" : {
+ "body" : "some_response_body"
+ }
+}

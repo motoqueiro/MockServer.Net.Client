@@ -1,0 +1,13 @@
+{
+ "httpRequest" : {
+ "method" : "GET",
+ "path" : "/some/path",
+ "headers" : {
+ "Accept" : [ "application/json" ],
+ "Accept-Encoding" : [ "gzip, deflate, br" ]
+ }
+ },
+ "httpResponse" : {
+ "body" : "some_response_body"
+ }
+}

@@ -1,0 +1,1 @@
+curl -v -X PUT "http://localhost:1080/retrieve?type=ACTIVE_EXPECTATIONS"

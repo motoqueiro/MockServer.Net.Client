@@ -1,6 +1,5 @@
 ﻿namespace MockServer.Net.Client.IntegrationTests
 {
-    using System;
     using System.IO;
     using System.Net;
     using System.Threading.Tasks;
@@ -16,16 +15,13 @@
         [SetUp]
         public void SetUp()
         {
-            var serverUrl = Environment.GetEnvironmentVariable("MOCK_SERVER_URL");
+            var serverUrl = "http://localhost:32775";
             this._client = new RestApiClient(serverUrl);
         }
 
-        [TestCaseSource(typeof(IntegrationTestCaseData), ""]
+        [TestCaseSource(typeof(IntegrationTestCaseData), "ExpectationsSource")]
         public async Task CreateExpectation(string jsonData)
         {
-            //Arrange
-            var jsonData = await this.ReadJsonFile("MatchRequestByPath.json");
-
             //Act
             var result = await this._client.Expectation(jsonData);
 

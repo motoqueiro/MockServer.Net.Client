@@ -1,0 +1,10 @@
+{
+ "httpRequest": {
+ "path": "/some/path"
+ },
+ "httpForward": {
+ "host": "mock-server.com",
+ "port": 80,
+ "scheme": "HTTP"
+ }
+}

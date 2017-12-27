@@ -1,0 +1,9 @@
+{
+ "httpRequest": {
+ "path": "/some/path"
+ },
+ "httpError": {
+ "dropConnection": true,
+ "responseBytes": "eQqmdjEEoaXnCvcK6lOAIZeU+Pn+womxmg=="
+ }
+}
