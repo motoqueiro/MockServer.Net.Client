@@ -29,7 +29,7 @@
 
         public LogLevelEnum? LogLevel { get; set; }
 
-        public abstract string ResolveFileName();
+        public abstract string FileName { get; }
 
         public abstract string BuildCommandLineArguments();
 
@@ -42,7 +42,7 @@
 #else
                 WindowStyle = ProcessWindowStyle.Hidden,
 #endif
-                FileName = this.ResolveFileName(),
+                FileName = this.FileName,
                 Arguments = this.BuildCommandLineArguments()
             };
         }

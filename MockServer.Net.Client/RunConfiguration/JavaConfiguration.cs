@@ -1,5 +1,6 @@
 ﻿namespace MockServer.Net.Client.RunConfiguration
 {
+    using System;
     using System.Text;
     using Entities;
 
@@ -14,22 +15,31 @@
 
         public JavaConfiguration(
             string jarPath,
-            int? serverPort,
-            int? proxyPort,
-            int? proxyRemotePort,
-            string proxyRemoteHost,
-            LogLevelEnum? logLevel,
-            LogLevelEnum? rootLogLevel,
-            string logLevelConfigurationFilePath)
+            int? serverPort = null,
+            int? proxyPort = null,
+            int? proxyRemotePort = null,
+            string proxyRemoteHost = null,
+            LogLevelEnum? logLevel = null,
+            LogLevelEnum? rootLogLevel = null,
+            string logLevelConfigurationFilePath = null)
             : base(serverPort, proxyPort, proxyRemotePort, proxyRemoteHost, logLevel)
         {
+            if (string.IsNullOrEmpty(jarPath))
+            {
+                throw new ArgumentNullException(nameof(jarPath));
+            }
+
             this.JarPath = jarPath;
             this.RootLogLevel = rootLogLevel;
             this.LogLevelConfigurationFilePath = logLevelConfigurationFilePath;
         }
-        public override string ResolveFileName()
+
+        public override string FileName
         {
-            return "java";
+            get
+            {
+                return "java";
+            }
         }
 
         public override string BuildCommandLineArguments()
@@ -45,16 +55,12 @@
                 sb.AppendFormat(" -Dmockserver.logLevel={0}", this.LogLevel.Value.ToString());
             }
 
-            if (string.IsNullOrEmpty(this.LogLevelConfigurationFilePath))
+            if (!string.IsNullOrEmpty(this.LogLevelConfigurationFilePath))
             {
                 sb.AppendFormat(" -Dlogback.configurationFile={0}", this.LogLevelConfigurationFilePath);
             }
 
-            if (string.IsNullOrEmpty(this.JarPath))
-            {
-                sb.AppendFormat(" -jar {0}", this.JarPath);
-            }
-
+            sb.AppendFormat(" -jar {0}", this.JarPath);
             if (this.ServerPort.HasValue)
             {
                 sb.AppendFormat(" -serverPort {0}", this.ServerPort);

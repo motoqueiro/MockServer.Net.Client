@@ -8,6 +8,7 @@ namespace MockServer.Net.Client.Tests
     using System.Threading.Tasks;
     using FluentAssertions;
     using Flurl.Http.Testing;
+    using MockServer.Net.Client.Entities;
     using NUnit.Framework;
     using SimpleFixture;
 

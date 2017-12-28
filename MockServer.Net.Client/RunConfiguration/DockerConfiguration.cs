@@ -9,19 +9,23 @@
         public string GenericJVMOptions { get; set; }
 
         public DockerConfiguration(
-            int? serverPort,
-            int? proxyPort,
-            int? proxyRemotePort,
-            string proxyRemoteHost,
-            LogLevelEnum? logLevel,
-            string jvmOptions)
+            int? serverPort = null,
+            int? proxyPort = null,
+            int? proxyRemotePort = null,
+            string proxyRemoteHost = null,
+            LogLevelEnum? logLevel = null,
+            string jvmOptions = null)
             : base(serverPort, proxyPort, proxyRemotePort, proxyRemoteHost, logLevel)
         {
             this.GenericJVMOptions = jvmOptions;
         }
-        public override string ResolveFileName()
+
+        public override string FileName
         {
-            return "docker";
+            get
+            {
+                return "docker";
+            }
         }
 
         public override string BuildCommandLineArguments()
@@ -46,34 +50,41 @@
             }
 
             sb.Append(" jamesdbloom/mockserver");
-            if (this.LogLevel.HasValue)
+            if (this.LogLevel.HasValue
+                || !string.IsNullOrEmpty(this.ProxyRemoteHost)
+                || this.ProxyRemotePort.HasValue
+                || !string.IsNullOrEmpty(this.GenericJVMOptions))
             {
-                sb.AppendFormat(" -logLevel {0}", this.LogLevel.ToString());
-            }
+                sb.Append(" /opt/mockserver/run_mockserver.sh");
+                if (this.LogLevel.HasValue)
+                {
+                    sb.AppendFormat(" -logLevel {0}", this.LogLevel.ToString());
+                }
 
-            if (this.ServerPort.HasValue)
-            {
-                sb.AppendFormat(" -serverPort {0}", this.ServerPort);
-            }
+                if (this.ServerPort.HasValue)
+                {
+                    sb.AppendFormat(" -serverPort {0}", this.ServerPort);
+                }
 
-            if (this.ProxyPort.HasValue)
-            {
-                sb.AppendFormat(" -proxyPort {0}", this.ProxyPort);
-            }
+                if (this.ProxyPort.HasValue)
+                {
+                    sb.AppendFormat(" -proxyPort {0}", this.ProxyPort);
+                }
 
-            if (this.ProxyRemotePort.HasValue)
-            {
-                sb.AppendFormat(" -proxyRemotePort {0}", this.ProxyRemotePort);
-            }
+                if (this.ProxyRemotePort.HasValue)
+                {
+                    sb.AppendFormat(" -proxyRemotePort {0}", this.ProxyRemotePort);
+                }
 
-            if (!string.IsNullOrEmpty(this.ProxyRemoteHost))
-            {
-                sb.AppendFormat(" -proxyRemoteHost {0}", this.ProxyRemoteHost);
-            }
+                if (!string.IsNullOrEmpty(this.ProxyRemoteHost))
+                {
+                    sb.AppendFormat(" -proxyRemoteHost {0}", this.ProxyRemoteHost);
+                }
 
-            if (string.IsNullOrEmpty(this.GenericJVMOptions))
-            {
-                sb.AppendFormat(" -genericJVMOptions \"{0}\"", this.GenericJVMOptions);
+                if (!string.IsNullOrEmpty(this.GenericJVMOptions))
+                {
+                    sb.AppendFormat(" -genericJVMOptions \"{0}\"", this.GenericJVMOptions);
+                }
             }
 
             return sb.ToString();

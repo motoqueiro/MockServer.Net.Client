@@ -7,18 +7,20 @@
         : BaseConfiguration
     {
         public HomebrewConfiguration(
-            int? serverPort,
-            int? proxyPort,
-            int? proxyRemotePort,
-            string proxyRemoteHost,
-            LogLevelEnum? logLevel)
+            int? serverPort = null,
+            int? proxyPort = null,
+            int? proxyRemotePort = null,
+            string proxyRemoteHost = null,
+            LogLevelEnum? logLevel = null)
             : base(serverPort, proxyPort, proxyRemotePort, proxyRemoteHost, logLevel)
-        {
-        }
+        { }
 
-        public override string ResolveFileName()
+        public override string FileName
         {
-            return "mockserver";
+            get
+            {
+                return "mockserver";
+            }
         }
 
         public override string BuildCommandLineArguments()

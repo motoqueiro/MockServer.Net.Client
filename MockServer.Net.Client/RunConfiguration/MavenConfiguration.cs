@@ -15,15 +15,15 @@
         public bool Skip { get; set; }
 
         public MavenConfiguration(
-            MavenGoalEnum goal,
-            int? serverPort,
-            int? proxyPort,
-            int? proxyRemotePort,
-            string proxyRemoteHost,
-            LogLevelEnum? logLevel,
-            int timeout,
-            bool skip,
-            bool initializationClass)
+            MavenGoalEnum goal = MavenGoalEnum.Run,
+            int? serverPort = null,
+            int? proxyPort = null,
+            int? proxyRemotePort = null,
+            string proxyRemoteHost = null,
+            LogLevelEnum? logLevel = null,
+            int timeout = 0,
+            bool skip = false,
+            bool initializationClass = false)
             : base(serverPort, proxyPort, proxyRemotePort, proxyRemoteHost, logLevel)
         {
             this.Goal = goal;
@@ -31,9 +31,13 @@
             this.Skip = skip;
             this.InitializationClass = initializationClass;
         }
-        public override string ResolveFileName()
+
+        public override string FileName
         {
-            return "mvn";
+            get
+            {
+                return "mvn";
+            }
         }
 
         public override string BuildCommandLineArguments()
