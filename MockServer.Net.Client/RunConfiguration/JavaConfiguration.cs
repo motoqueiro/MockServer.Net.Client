@@ -15,8 +15,8 @@
 
         public JavaConfiguration(
             string jarPath,
-            int? serverPort = null,
-            int? proxyPort = null,
+            int serverPort = 1080,
+            int proxyPort = 1090,
             int? proxyRemotePort = null,
             string proxyRemoteHost = null,
             LogLevelEnum? logLevel = null,
