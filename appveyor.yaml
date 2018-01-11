@@ -55,10 +55,19 @@ nuget:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
   - cmd: dotnet build --configuration Release
+
+#---------------------------------#
+#       tests configuration       #
+#---------------------------------#
+# to run tests again only selected assemblies and/or categories
+test:
+  assemblies:
+    only:
+      - "**\\*Tests.dll"
+
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
-
 # providers: Local, FTP, WebDeploy, AzureCS, AzureBlob, S3, NuGet, Environment
 # provider names are case-sensitive!
 deploy:
@@ -77,17 +86,3 @@ deploy:
     on:
       branch: master                # release from master branch only
       appveyor_repo_tag: true       # deploy on tag push only
-
-#---------------------------------#
-#         notifications           #
-#---------------------------------#
-
-notifications:
-  # Email
-  - provider: Email
-    to:
-      - user1@email.com
-      - user2@email.com
-    subject: 'Build {{status}}'                  # optional
-    message: "{{message}}, {{commitId}}, ..."    # optional
-    on_build_status_changed: true
