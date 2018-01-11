@@ -43,7 +43,6 @@
         public override string BuildCommandLineArguments()
         {
             var sb = new StringBuilder();
-
             if (this.ServerPort.HasValue)
             {
                 sb.AppendFormat(" -Dmockserver.serverPort {0}", this.ServerPort);
@@ -60,7 +59,7 @@
             }
 
             sb.AppendFormat(" org.mock-server:mockserver-maven-plugin:5.3.0:{0}", this.Goal);
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
     }
 }

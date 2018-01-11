@@ -28,30 +28,30 @@
             var sb = new StringBuilder();
             if (this.LogLevel.HasValue)
             {
-                sb.AppendFormat(" -logLevel {0}", this.LogLevel.ToString());
+                sb.AppendFormat("-logLevel {0} ", this.LogLevel.ToString());
             }
 
             if (this.ServerPort.HasValue)
             {
-                sb.AppendFormat(" -serverPort {0}", this.ServerPort);
+                sb.AppendFormat("-serverPort {0} ", this.ServerPort);
             }
 
             if (this.ProxyPort.HasValue)
             {
-                sb.AppendFormat(" -proxyPort {0}", this.ProxyPort);
+                sb.AppendFormat("-proxyPort {0} ", this.ProxyPort);
             }
 
             if (this.ProxyRemotePort.HasValue)
             {
-                sb.AppendFormat(" -proxyRemotePort {0}", this.ProxyRemotePort);
+                sb.AppendFormat("-proxyRemotePort {0} ", this.ProxyRemotePort);
             }
 
             if (!string.IsNullOrEmpty(this.ProxyRemoteHost))
             {
-                sb.AppendFormat(" -proxyRemoteHost {0}", this.ProxyRemoteHost);
+                sb.AppendFormat("-proxyRemoteHost {0} ", this.ProxyRemoteHost);
             }
 
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
     }
 }

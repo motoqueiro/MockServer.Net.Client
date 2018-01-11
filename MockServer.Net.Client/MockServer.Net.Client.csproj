@@ -2,6 +2,13 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageProjectUrl>https://github.com/motoqueiro/MockServer.Net.Client</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/motoqueiro/MockServer.Net.Client</RepositoryUrl>
+    <RepositoryType>Git</RepositoryType>
+    <PackageTags>mockserver .net</PackageTags>
+    <Authors>Tiago Coutinho Monteiro</Authors>
+    <Company />
+    <Description>MockServer Rest API Client for .Net</Description>
   </PropertyGroup>
 
   <ItemGroup>
