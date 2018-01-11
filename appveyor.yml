@@ -64,8 +64,7 @@ build_script:
 test:
   assemblies:
     only:
-      - '**\MockServer.Net.Client.UnitTests.dll'
-	  - '**\MockServer.Net.Client.IntegrationTests.dll'
+      - '**\*Tests.dll'
 
 #---------------------------------#
 #     deployment configuration    #
