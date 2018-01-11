@@ -54,7 +54,7 @@ nuget:
 #---------------------------------#
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - dotnet build --configuration Release
+  - cmd: dotnet build --configuration Release
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
