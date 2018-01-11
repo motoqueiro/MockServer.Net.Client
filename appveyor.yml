@@ -54,7 +54,8 @@ nuget:
 #---------------------------------#
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - cmd: dotnet build --configuration Release
+  - cmd: dotnet build --configuration Release --verbosity normal
+  - cmd: dotnet pack ~/MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-build --verbosity normal
 
 #---------------------------------#
 #       tests configuration       #
@@ -63,7 +64,8 @@ build_script:
 test:
   assemblies:
     only:
-      - "**\\*Tests.dll"
+      - '**\MockServer.Net.Client.UnitTests.dll'
+	  - '**\MockServer.Net.Client.IntegrationTests.dll'
 
 #---------------------------------#
 #     deployment configuration    #
@@ -77,12 +79,3 @@ deploy:
       secure: hUkhIXTpdjZMy2lopC8rAa2AvIHRa7hTF2M2neTrgh3FTSgxtuiGHWfl9WcTsz6+
     skip_symbols: false
     artifact: /.*\.nupkg/
-
-    # Deploy to GitHub Releases
-  - provider: GitHub
-    artifact: /.*\.nupkg/           # upload all NuGet packages to release assets
-    draft: false
-    prerelease: false
-    on:
-      branch: master                # release from master branch only
-      appveyor_repo_tag: true       # deploy on tag push only
