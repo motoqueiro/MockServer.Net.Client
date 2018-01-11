@@ -34,7 +34,7 @@ image:
 # enable patching of AssemblyInfo.* files
 dotnet_csproj:
   patch: true
-  file: "**\*.csproj"
+  file: "**\\*.csproj"
   version: "{version}"
   package_version: "{version}"
   assembly_version: "{version}"
@@ -52,36 +52,9 @@ nuget:
 #---------------------------------#
 #       build configuration       #
 #---------------------------------#
-
-# build platform, i.e. x86, x64, Any CPU. This setting is optional.
-platform: Any CPU
-
-# build Configuration, i.e. Debug, Release, etc.
-configuration: Release
-
-# to add several configurations to build matrix:
-#configuration:
-#  - Debug
-#  - Release
-
-build:
-  parallel: true                  # enable MSBuild parallel builds
-  project: MockServer.Client.sln      # path to Visual Studio solution or project
-  publish_nuget: true             # package projects with .nuspec files and push to artifacts
-  publish_nuget_symbols: true     # generate and publish NuGet symbol packages
-  include_nuget_references: true  # add -IncludeReferencedProjects option while packaging NuGet artifacts
-
-  # MSBuild verbosity level
-  verbosity: normal
-
-
-# scripts to run before build
-before_build:
-  - nuget restore
-
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - dotnet build
+  - dotnet build --configuration Release
 #---------------------------------#
 #     deployment configuration    #
 #---------------------------------#
