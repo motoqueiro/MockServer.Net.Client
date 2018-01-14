@@ -222,25 +222,40 @@ namespace MockServer.Net.Client.UnitTests
                 .WithVerb(HttpMethod.Put);
         }
 
-        [TestCaseSource(typeof(UnitTestCaseData), "ExceptionTestData")]
-        public void GenericClientAction_ShouldThrowException(
-            string methodName,
-            HttpStatusCode status,
-            string description,
-            string body,
-            object[] parameters)
+        [Category("Reset")]
+        [Test]
+        public void ResetRequest_ShouldThrowException()
         {
             //Arrange
-            this._httpTest.RespondWith(body, (int)status);
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
 
             //Act
-            Func<Task> func = async () => await Invoke(
-                methodName,
-                parameters);
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Reset());
 
             //Assert
-            var exception = func.ShouldThrow<Exception>()
-                .WithMessage($"Unexpected MockServer response with code {status} for {methodName.ToLower()}!");
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for reset!");
+        }
+
+        [Category("Retrieve")]
+        [Test]
+        public void RetrieveRequest_ShouldThrowException()
+        {
+            //Arrange
+            var jsonData = this._fixture.Generate<string>();
+            var format = RetrieveFormatEnum.JSON;
+            var type = RetrieveTypeEnum.REQUESTS;
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Retrieve(
+                jsonData,
+                format,
+                type));
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for retrieve!");
         }
 
         [TearDown]
