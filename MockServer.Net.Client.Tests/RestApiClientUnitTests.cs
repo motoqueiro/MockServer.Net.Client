@@ -1,8 +1,6 @@
-namespace MockServer.Net.Client.Tests
+namespace MockServer.Net.Client.UnitTests
 {
     using System;
-    using System.Collections.Generic;
-    using System.Linq;
     using System.Net;
     using System.Net.Http;
     using System.Threading.Tasks;
@@ -179,32 +177,49 @@ namespace MockServer.Net.Client.Tests
                 .WithVerb(HttpMethod.Put);
         }
 
-        [TestCaseSource(typeof(UnitTestCaseData), "OkTestData")]
-        public async Task GenericClientAction_ShouldBeOk(
-            string methodName,
+        [Category("Clear")]
+        [TestCase(200, "expectations and recorded requests cleared", TestName = "ClearRequest_ShouldReturnOk")]
+        [TestCase(400, "incorrect request format", TestName = "ClearRequest_ShouldReturnBadRequest")]
+        public async Task ClearRequestTest(
             HttpStatusCode status,
-            string description,
-            string body,
-            object[] parameters)
+            string description)
         {
             //Arrange
-            this._httpTest.RespondWith(body, (int)status);
+            this._httpTest.RespondWith(string.Empty, (int)status);
+            var jsonData = this._fixture.Generate<string>();
 
             //Act
-            var response = await Invoke(
-                methodName,
-                parameters);
+            var response = await this._client.Clear(jsonData);
 
             //Assert
-            AssertResponse(response, status, description, body);
-            var callAssertion = this._httpTest
-                .ShouldHaveCalled(this._serverUrl + methodName.ToLowerInvariant())
+            AssertResponse(response, status, description, jsonData);
+            this._httpTest
+                .ShouldHaveCalled(this._serverUrl + "clear")
+                .WithRequestJson(jsonData)
                 .WithVerb(HttpMethod.Put);
-            if (parameters != null
-                && !string.IsNullOrEmpty((string)parameters[0]))
-            {
-                callAssertion.WithRequestBody((string)parameters[0]);
-            }
+        }
+
+        [Category("Bind")]
+        [TestCase(200, "listening on additional requested ports, note: the response ony contains ports added for the request, to list all ports use /status", TestName = "BindRequest_ShouldReturnOk")]
+        [TestCase(400, "incorrect request format", TestName = "BindRequest_ShouldReturnBadRequest")]
+        [TestCase(406, "unable to bind to ports(i.e.already bound or JVM process doesn't have permission)", TestName = "BindRequest_ShouldReturnNotAcceptable")]
+        public async Task BindRequestTest(
+            HttpStatusCode status,
+            string description)
+        {
+            //Arrange
+            this._httpTest.RespondWith(string.Empty, (int)status);
+            var jsonData = this._fixture.Generate<string>();
+
+            //Act
+            var response = await this._client.Bind(jsonData);
+
+            //Assert
+            AssertResponse(response, status, description, jsonData);
+            this._httpTest
+                .ShouldHaveCalled(this._serverUrl + "verifysequence")
+                .WithRequestJson(jsonData)
+                .WithVerb(HttpMethod.Put);
         }
 
         [TestCaseSource(typeof(UnitTestCaseData), "ExceptionTestData")]
@@ -234,23 +249,6 @@ namespace MockServer.Net.Client.Tests
             this._httpTest.Dispose();
         }
 
-        private IEnumerable<object> ResolveParameters(
-            string jsonData,
-            object[] parameters)
-        {
-            var parametersList = new List<object>();
-            if (!string.IsNullOrEmpty(jsonData))
-            {
-                parametersList.Add(jsonData);
-            }
-
-            if (parameters != null)
-            {
-                parametersList.AddRange(parameters);
-            }
-            return parametersList;
-        }
-
         private void AssertResponse(
             Response response,
             HttpStatusCode status,
@@ -262,7 +260,7 @@ namespace MockServer.Net.Client.Tests
             response.Description.Should().Equals(description);
             if (!string.IsNullOrEmpty(body))
             {
-                response.Content.Should().Equals(body); 
+                response.Content.Should().Equals(body);
             }
         }
     }
