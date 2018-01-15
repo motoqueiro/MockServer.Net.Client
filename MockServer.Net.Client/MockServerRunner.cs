@@ -14,12 +14,14 @@
         public MockServerRunner(BaseConfiguration configuration)
         {
             this._configuration = configuration ?? throw new ArgumentNullException(nameof(configuration));
-            this._process = new Process();
+            this._process = new Process
+            {
+                StartInfo = this._configuration.BuildStartInfo()
+            };
         }
 
         public void Start()
         {
-            this._process.StartInfo = this._configuration.BuildStartInfo();
             this._process.Start();
             if (this._process.HasExited)
             {
@@ -31,8 +33,8 @@
 
         public int ProcessId => this._process.Id;
 
-        public void Stop() => this._process?.Kill();
+        public void Kill() => this._process?.Kill();
 
-        public void Dispose() => this.Stop();
+        public void Dispose() => this.Kill();
     }
 }
