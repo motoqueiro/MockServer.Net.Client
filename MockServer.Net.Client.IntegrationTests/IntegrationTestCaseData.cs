@@ -2,32 +2,24 @@
 {
     using System.Collections;
     using System.IO;
+    using System.Linq;
+    using MockServer.Documentation.Parser;
     using NUnit.Framework;
 
     internal class IntegrationTestCaseData
     {
-        internal static IEnumerable ExpectationsSource
+        public static IEnumerable LoadTestCaseDataFromJson(string action)
         {
-            get
-            {
-                return LoadTestCaseData("Expectation");
-            }
-        }
-
-        private static IEnumerable LoadTestCaseData(string action)
-        {
-            var jsonDataDirectory = Path.Combine(
+            var jsonFilePath = Path.Combine(
                 Directory.GetCurrentDirectory(),
-                "Samples",
-                action);
-            foreach (var fileName in Directory.GetFiles(jsonDataDirectory, "*.json"))
+                "sample_categories.json");
+            var sampleCategories = Storer.Read(jsonFilePath);
+            var actionSamples = sampleCategories.SelectMany(sc => sc.Samples)
+                .Where(s => s.Action == action);
+            foreach (var sample in actionSamples)
             {
-                var filePath = Path.Combine(
-                    jsonDataDirectory,
-                    fileName);
-                var jsonData = File.ReadAllText(filePath);
-                var testName = $"Integration Test - {action} - {Path.GetFileNameWithoutExtension(fileName)}";
-                yield return new TestCaseData(jsonData)
+                var testName = $"Integration Test - {sample.Action} - {sample.Title}";
+                yield return new TestCaseData(sample.Body)
                     .SetName(testName)
                     .SetCategory(action);
             }

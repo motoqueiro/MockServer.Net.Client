@@ -6,6 +6,12 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="..\MockServer.Documentation.Parser\sample_categories.json" Link="sample_categories.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
 	<PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.5.0" />
@@ -14,10 +20,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\MockServer.Documentation.Parser\MockServer.Documentation.Parser.csproj" />
     <ProjectReference Include="..\MockServer.Net.Client\MockServer.Net.Client.csproj" />
   </ItemGroup>
 
   <ItemGroup>
+    <None Update="mockserver-netty-5.2.3-jar-with-dependencies.jar">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="Samples\bind\bind to additional free port.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>

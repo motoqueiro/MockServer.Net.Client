@@ -21,55 +21,47 @@
         }
 
         [TestCase(
+            MavenGoalEnum.Run,
             1080,
             1090,
             null,
-            null,
-            null,
-            "-Dmockserver.serverPort=1080 -Dmockserver.proxyPort=1090")]
+            "-Dmockserver.serverPort=1080 -Dmockserver.proxyPort=1090 org.mock-server:mockserver-maven-plugin:5.3.0:run")]
         [TestCase(
+            MavenGoalEnum.Run,
             1080,
             null,
             null,
             null,
-            null,
-            "-Dmockserver.serverPort=1080")]
+            "-Dmockserver.serverPort=1080 org.mock-server:mockserver-maven-plugin:5.3.0:run")]
         [TestCase(
+            MavenGoalEnum.Run,
             null,
             1090,
             null,
-            null,
-            null,
-            "-Dmockserver.proxyPort=1090")]
-        [TestCase(
-            1080,
-            1090,
-            null,
-            null,
-            LogLevelEnum.INFO,
-            "-Dmockserver.serverPort=1080 -Dmockserver.proxyPort=1090 -Dmockserver.logLevel=INFO")]
-        [TestCase(
-            null,
-            1090,
-            80,
-            "www.mock-server.com",
-            null,
-            "-proxyPort 1090 -proxyRemotePort 80 -proxyRemoteHost www.mock-server.com")]
+            "-Dmockserver.proxyPort=1090 org.mock-server:mockserver-maven-plugin:5.3.0:run")]
         [TestCase(
             MavenGoalEnum.Run,
             1080,
             1090,
-            80,
-            "www.mock-server.com",
+            LogLevelEnum.INFO,
+            "-Dmockserver.serverPort=1080 -Dmockserver.proxyPort=1090 -Dmockserver.logLevel=INFO org.mock-server:mockserver-maven-plugin:5.3.0:run")]
+        [TestCase(
+            MavenGoalEnum.Run,
             null,
-            "-serverPort 1080 -proxyPort 1090 -proxyRemotePort 80 -proxyRemoteHost www.mock-server.com org.mock-server:mockserver-maven-plugin:5.3.0:run")]
+            1090,
+            null,
+            "-Dmockserver.proxyPort=1090 org.mock-server:mockserver-maven-plugin:5.3.0:run")]
+        [TestCase(
+            MavenGoalEnum.Run,
+            1080,
+            1090,
+            null,
+            "-Dmockserver.serverPort=1080 -Dmockserver.proxyPort=1090 org.mock-server:mockserver-maven-plugin:5.3.0:run")]
         [Category("Command Line Arguments")]
         public void CommandLineArguments_ShouldBeValid(
             MavenGoalEnum goal,
             int? serverPort,
             int? proxyPort,
-            int? proxyRemotePort,
-            string proxyRemoteHost,
             LogLevelEnum? logLevel,
             string expectedArguments)
         {
@@ -78,8 +70,6 @@
                 goal,
                 serverPort,
                 proxyPort,
-                proxyRemotePort,
-                proxyRemoteHost,
                 logLevel);
 
             //Act
@@ -90,8 +80,6 @@
             configuration.Goal.Should().Be(goal);
             configuration.ServerPort.Should().Be(serverPort);
             configuration.ProxyPort.Should().Be(proxyPort);
-            configuration.ProxyRemotePort.Should().Be(proxyRemotePort);
-            configuration.ProxyRemoteHost.Should().Be(proxyRemoteHost);
             configuration.LogLevel.Should().Be(logLevel);
         }
     }

@@ -1,11 +1,11 @@
 ﻿namespace MockServer.Documentation.Parser
 {
     using System.Collections.Generic;
-    using System.Globalization;
     using System.Linq;
     using System.Threading.Tasks;
     using AngleSharp;
     using AngleSharp.Dom;
+    using MockServer.Documentation.Parser.Entities;
 
     public class Parser
     {
@@ -17,19 +17,19 @@
             this._context = BrowsingContext.New(config);
         }
 
-        public async Task<ICollection<SampleCategory>> Parse(params string[] addresses)
+        public static async Task<ICollection<SampleCategory>> Parse(params string[] addresses)
         {
             var results = new List<SampleCategory>();
             foreach (var address in addresses)
             {
-                var sampleCategories = await  this.Parse(address);
+                var sampleCategories = await Parse(address);
                 results.AddRange(sampleCategories);
             }
 
             return results;
         }
 
-        public async Task<ICollection<SampleCategory>> Parse(string address)
+        public static async Task<ICollection<SampleCategory>> Parse(string address)
         {
             var config = Configuration.Default.WithDefaultLoader();
             var document = await BrowsingContext.New(config)
@@ -39,11 +39,11 @@
             {
                 return null;
             }
-            return this.ParseSampleCategories(titleElements)
+            return ParseSampleCategories(titleElements)
                 .ToList();
         }
 
-        private IEnumerable<SampleCategory> ParseSampleCategories(IHtmlCollection<IElement> titleElements)
+        private static IEnumerable<SampleCategory> ParseSampleCategories(IHtmlCollection<IElement> titleElements)
         {
             foreach (var titleElement in titleElements)
             {
@@ -55,14 +55,14 @@
                 var sampleElements = titleElement.NextElementSibling.QuerySelectorAll("div.panel.title > button.accordion");
                 if (sampleElements != null)
                 {
-                    var samples = this.ParseSamples(sampleElements);
+                    var samples = ParseSamples(sampleElements);
                     sampleCategory.Samples.AddRange(samples);
                 }
                 yield return sampleCategory;
             }
         }
 
-        private IEnumerable<Sample> ParseSamples(IHtmlCollection<IElement> sampleElements)
+        private static IEnumerable<Sample> ParseSamples(IHtmlCollection<IElement> sampleElements)
         {
             foreach (var sampleElement in sampleElements)
             {

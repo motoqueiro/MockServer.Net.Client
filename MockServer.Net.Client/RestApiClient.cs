@@ -75,7 +75,7 @@
         /// <returns></returns>
         public async Task<Response> VerifySequence(string jsonData)
         {
-            return await this.PutRequest("verifySequence", jsonData);
+            return await this.PutRequest("verifysequence", jsonData);
         }
 
         /// <summary>
@@ -123,7 +123,7 @@
         /// <returns></returns>
         public async Task<Response> Status()
         {
-            return await this.PutRequest(nameof(Status));
+            return await this.PutRequest("status");
         }
 
         /// <summary>
@@ -145,7 +145,7 @@
         /// <returns></returns>
         public async Task<Response> Stop()
         {
-            return await this.PutRequest(nameof(Stop));
+            return await this.PutRequest("stop");
         }
 
         private async Task<Response> PutRequest(

@@ -5,6 +5,7 @@
     using MockServer.Net.Client.RunConfiguration;
 
     public class MockServerRunner
+        : IDisposable
     {
         private readonly Process _process;
 
@@ -20,11 +21,18 @@
         {
             this._process.StartInfo = this._configuration.BuildStartInfo();
             this._process.Start();
+            if (this._process.HasExited)
+            {
+                throw new Exception($"Unable to start mockserver with {this._configuration.ToString()}");
+            }
         }
 
-        public void Stop()
-        {
-            this._process.Dispose();
-        }
+        public string RestApiUrl => this._configuration.RestApiUrl;
+
+        public int ProcessId => this._process.Id;
+
+        public void Stop() => this._process?.Kill();
+
+        public void Dispose() => this.Stop();
     }
 }

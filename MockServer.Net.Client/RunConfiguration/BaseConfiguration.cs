@@ -31,7 +31,18 @@
 
         public abstract string FileName { get; }
 
+        public virtual string Domain => string.IsNullOrEmpty(this.ProxyRemoteHost) ? "http://localhost" : this.ProxyRemoteHost;
+
+        public virtual int Port => this.ProxyRemotePort ?? this.ProxyPort ?? this.ServerPort ?? 1080;
+
+        public virtual string RestApiUrl => $"{this.Domain}:{this.Port}";
+
         public abstract string BuildCommandLineArguments();
+
+        public override string ToString()
+        {
+            return $"{this.GetType().Name} -> {this.FileName} {this.BuildCommandLineArguments()}";
+        }
 
         public ProcessStartInfo BuildStartInfo()
         {

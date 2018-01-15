@@ -63,15 +63,14 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description);
         }
 
-        //TODO: Define retieve format and retrieve type for unit tests
-        [Category("Expectation")]
-        [TestCase(200, "recorded requests or active expectations returned", TestName = "RetrieveRequest_ShouldReturnOk")]
-        [TestCase(400, "incorrect request format", TestName = "RetrieveRequest_ShouldReturBadRequest")]
+        [Category("Retrieve")]
+        [TestCase(200, "recorded requests or active expectations returned", RetrieveFormatEnum.JSON, RetrieveTypeEnum.REQUESTS, TestName = "RetrieveRequest_ShouldReturnOk")]
+        [TestCase(400, "incorrect request format", RetrieveFormatEnum.JSON, RetrieveTypeEnum.REQUESTS, TestName = "RetrieveRequest_ShouldReturBadRequest")]
         public async Task RetrieveRequestTest(
-            RetrieveFormatEnum format,
-            RetrieveTypeEnum type,
             HttpStatusCode status,
-            string description)
+            string description,
+            RetrieveFormatEnum format,
+            RetrieveTypeEnum type)
         {
             //Arrange
             this._httpTest.RespondWith(string.Empty, (int)status);
@@ -87,9 +86,9 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description);
             this._httpTest
                 .ShouldHaveCalled(this._serverUrl + "retrieve")
-                .WithoutQueryParamValue("format", format)
-                .WithoutQueryParamValue("type", type)
-                .WithRequestJson(jsonData)
+                .WithQueryParamValue("format", format)
+                .WithQueryParamValue("type", type)
+                .WithRequestBody(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -150,7 +149,7 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description, jsonData);
             this._httpTest
                 .ShouldHaveCalled(this._serverUrl + "verify")
-                .WithRequestJson(jsonData)
+                .WithRequestBody(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -173,7 +172,7 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description, jsonData);
             this._httpTest
                 .ShouldHaveCalled(this._serverUrl + "verifysequence")
-                .WithRequestJson(jsonData)
+                .WithRequestBody(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -185,8 +184,8 @@ namespace MockServer.Net.Client.UnitTests
             string description)
         {
             //Arrange
-            this._httpTest.RespondWith(string.Empty, (int)status);
             var jsonData = this._fixture.Generate<string>();
+            this._httpTest.RespondWith(string.Empty, (int)status);
 
             //Act
             var response = await this._client.Clear(jsonData);
@@ -195,7 +194,7 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description, jsonData);
             this._httpTest
                 .ShouldHaveCalled(this._serverUrl + "clear")
-                .WithRequestJson(jsonData)
+                .WithRequestBody(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -217,8 +216,8 @@ namespace MockServer.Net.Client.UnitTests
             //Assert
             AssertResponse(response, status, description, jsonData);
             this._httpTest
-                .ShouldHaveCalled(this._serverUrl + "verifysequence")
-                .WithRequestJson(jsonData)
+                .ShouldHaveCalled(this._serverUrl + "bind")
+                .WithRequestBody(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -256,6 +255,116 @@ namespace MockServer.Net.Client.UnitTests
 
             //Assert
             exception.Message.Should().Be($"Unexpected MockServer response with code {status} for retrieve!");
+        }
+
+        [Category("Status")]
+        [Test]
+        public void StatusRequest_ShouldThrowException()
+        {
+            //Arrange
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Status());
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for status!");
+        }
+
+        [Category("Stop")]
+        [Test]
+        public void StopRequest_ShouldThrowException()
+        {
+            //Arrange
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Stop());
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for stop!");
+        }
+
+        [Category("Expectation")]
+        [Test]
+        public void CreateExpectation_ShouldThrowException()
+        {
+            //Arrange
+            var jsonData = this._fixture.Generate<string>();
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Expectation(jsonData));
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for expectation!");
+        }
+
+        [Category("Verify")]
+        [Test]
+        public void VerifyRequest_ShouldThrowException()
+        {
+            //Arrange
+            var jsonData = this._fixture.Generate<string>();
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Verify(jsonData));
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for verify!");
+        }
+
+        [Category("VerifySequence")]
+        [Test]
+        public void VerifySequenceRequest_ShouldThrowException()
+        {
+            //Arrange
+            var jsonData = this._fixture.Generate<string>();
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.VerifySequence(jsonData));
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for verifysequence!");
+        }
+
+        [Category("Clear")]
+        [Test]
+        public void ClearRequest_ShouldThrowException()
+        {
+            //Arrange
+            var jsonData = this._fixture.Generate<string>();
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Clear(jsonData));
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for clear!");
+        }
+
+        [Category("Bind")]
+        [Test]
+        public void BindRequest_ShouldThrowException()
+        {
+            //Arrange
+            var jsonData = this._fixture.Generate<string>();
+            var status = HttpStatusCode.Conflict;
+            this._httpTest.RespondWith(string.Empty, (int)status);
+
+            //Act
+            var exception = Assert.ThrowsAsync<Exception>(async () => await this._client.Bind(jsonData));
+
+            //Assert
+            exception.Message.Should().Be($"Unexpected MockServer response with code {status} for bind!");
         }
 
         [TearDown]

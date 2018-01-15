@@ -11,13 +11,20 @@
     [Category("Unit Tests")]
     public class JavaConfigurationUnitTests
     {
+        private Fixture _fixture;
+
+        [SetUp]
+        public void SetUp()
+        {
+            this._fixture = new Fixture();
+        }
+
         [Test]
         public void FileName_ShouldBeJava()
         {
             //Arrange
-            var fixture = new Fixture();
-            var jarPath = fixture.Generate<string>();
-            var serverPort = fixture.Generate<int>();
+            var jarPath = this._fixture.Generate<string>();
+            var serverPort = this._fixture.Generate<int>();
 
             //Act
             var javaConfiguration = new JavaConfiguration(
@@ -31,78 +38,87 @@
         }
 
         [TestCase(
-            null,
-            null,
-            null,
-            null,
-            null,
-            null,
-            "run -d -P jamesdbloom/mockserver")]
-        [TestCase(
-            1080,
-            1090,
-            null,
-            null,
-            null,
-            null,
-            "run -d -p 1080:1080 -p 1090:1090 jamesdbloom/mockserver")]
-        [TestCase(
+            "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
             null,
             null,
             null,
             null,
             null,
-            "run -d -p 1080:1080 jamesdbloom/mockserver")]
-        [TestCase(
             null,
+            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080")]
+        [TestCase(
+            "mockserver-netty-5.3.0-jar-with-dependencies.jar",
+            1080,
             1090,
             null,
             null,
             null,
             null,
-            "run -d -p 1090:1090 jamesdbloom/mockserver")]
+            null,
+            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
         [TestCase(
+            "mockserver-netty-5.3.0-jar-with-dependencies.jar",
+            1080,
+            1090,
+            80,
+            "www.mock-server.com",
+            null,
+            null,
+            null,
+            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090 -proxyRemotePort 80 -proxyRemoteHost www.mock-server.com")]
+        [TestCase(
+            "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
             1090,
             null,
             null,
             LogLevelEnum.INFO,
             null,
-            "run -d -p 1080:1080 -p 1090:1090 jamesdbloom/mockserver /opt/mockserver/run_mockserver.sh -logLevel INFO -serverPort 1080 -proxyPort 1090")]
+            null,
+            "-Dmockserver.logLevel=INFO -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
         [TestCase(
-            null,
-            1090,
-            80,
-            "www.mock-server.com",
-            null,
-            null,
-            "run -d -p 1090:1090 jamesdbloom/mockserver /opt/mockserver/run_mockserver.sh -proxyPort 1090 -proxyRemotePort 80 -proxyRemoteHost www.mock-server.com")]
-        [TestCase(
+            "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
             1090,
-            80,
-            "www.mock-server.com",
             null,
-            " -Dmockserver.enableCORSForAllResponses=true -Dmockserver.sslSubjectAlternativeNameDomains='org.mock-server.com,mock-server.com'", "run -d -p 1080:1080 -p 1090:1090 jamesdbloom/mockserver /opt/mockserver/run_mockserver.sh -logLevel INFO -serverPort 1080 -proxyPort 1090 -proxyRemotePort 80 -proxyRemoteHost www.mock-server.com -genericJVMOptions \"-Dmockserver.enableCORSForAllResponses=true -Dmockserver.sslSubjectAlternativeNameDomains='org.mock-server.com,mock-server.com'\"")]
+            null,
+            LogLevelEnum.INFO,
+            LogLevelEnum.WARN,
+            null,
+            "-Droot.logLevel=WARN -Dmockserver.logLevel=INFO -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
+        [TestCase(
+            "mockserver-netty-5.3.0-jar-with-dependencies.jar",
+            1080,
+            1090,
+            null,
+            null,
+            LogLevelEnum.INFO,
+            LogLevelEnum.WARN,
+            "example_logback.xml",
+            "-Droot.logLevel=WARN -Dmockserver.logLevel=INFO -Dlogback.configurationFile=example_logback.xml -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
         [Category("Command Line Arguments")]
         public void CommandLineArguments_ShouldBeValid(
-            int? serverPort,
+            string jarPath,
+            int serverPort,
             int? proxyPort,
             int? proxyRemotePort,
             string proxyRemoteHost,
             LogLevelEnum? logLevel,
-            string jvmOptions,
+            LogLevelEnum? rootLogLevel,
+            string logLevelConfigurationFilePath,
             string expectedArguments)
         {
             //Arrange
             var configuration = new JavaConfiguration(
+                jarPath,
                 serverPort,
                 proxyPort,
                 proxyRemotePort,
                 proxyRemoteHost,
                 logLevel,
-                jvmOptions);
+                rootLogLevel,
+                logLevelConfigurationFilePath);
 
             //Act
             var arguments = configuration.BuildCommandLineArguments();

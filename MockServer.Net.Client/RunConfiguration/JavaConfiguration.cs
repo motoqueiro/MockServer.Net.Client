@@ -16,7 +16,7 @@
         public JavaConfiguration(
             string jarPath,
             int serverPort = 1080,
-            int proxyPort = 1090,
+            int? proxyPort = null,
             int? proxyRemotePort = null,
             string proxyRemoteHost = null,
             LogLevelEnum? logLevel = null,
@@ -81,7 +81,7 @@
                 sb.AppendFormat(" -proxyRemoteHost {0}", this.ProxyRemoteHost);
             }
 
-            return sb.ToString();
+            return sb.ToString().Trim();
         }
     }
 }
