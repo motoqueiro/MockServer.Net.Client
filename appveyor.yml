@@ -7,7 +7,6 @@
 #---------------------------------#
 #      general configuration      #
 #---------------------------------#
-
 # version format
 version: 1.0.{build}
 
@@ -26,7 +25,6 @@ skip_tags: true
 #---------------------------------#
 #    environment configuration    #
 #---------------------------------#
-
 # Build worker image (VM template)
 image:
   - Visual Studio 2017
@@ -62,13 +60,12 @@ build_script:
 #---------------------------------#
 # to run tests again only selected assemblies and/or categories
 test_script:
-  - nunit3-console ./MockServer.Net.Client.UnitTests/bin/Release/netcoreapp2.0/MockServer.Net.Client.UnitTests.dll --result=MockServer.Net.Client.UnitTests.xml;format=AppVeyor
-#  - nunit3-console ./MockServer.Net.Client.IntegrationTests/bin/Release/netcoreapp2.0/MockServer.Net.Client.IntegrationTests.dll --result=MockServer.Net.Client.IntegrationTests.xml;format=AppVeyor
+  - dotnet test ./MockServer.Net.Client.UnitTests/MockServer.Net.Client.UnitTests.csproj --configuration Release --list-tests --verbosity minimal
+#  - dotnet test ./MockServer.Net.Client.IntegrationTests/MockServer.Net.Client.IntegrationTests.csproj --configuration Release --list-tests --verbosity minimal
 
 #---------------------------------#
 #      artifacts configuration    #
 #---------------------------------#
-
 artifacts:
   # pushing all *.nupkg files in build directory recursively
   - path: '**\*.nupkg'
@@ -83,5 +80,5 @@ deploy:
   - provider: NuGet
     api_key:
       secure: hUkhIXTpdjZMy2lopC8rAa2AvIHRa7hTF2M2neTrgh3FTSgxtuiGHWfl9WcTsz6+
-    skip_symbols: false
+    skip_symbols: true
     artifact: /.*\.nupkg/
