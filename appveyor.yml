@@ -62,8 +62,8 @@ build_script:
 #---------------------------------#
 # to run tests again only selected assemblies and/or categories
 test_script:
-  - nunit3-console ./MockServer.Net.Client.UnitTests/MockServer.Net.Client.UnitTests.dll --result=MockServer.Net.Client.UnitTests.xml;format=AppVeyor
-#  - nunit3-console ./MockServer.Net.Client.IntegrationTests/MockServer.Net.Client.IntegrationTests.dll --result=MockServer.Net.Client.IntegrationTests.xml;format=AppVeyor
+  - nunit3-console ./MockServer.Net.Client.UnitTests/bin/Release/netcoreapp2.0/MockServer.Net.Client.UnitTests.dll --result=MockServer.Net.Client.UnitTests.xml;format=AppVeyor
+#  - nunit3-console ./MockServer.Net.Client.IntegrationTests/bin/Release/netcoreapp2.0/MockServer.Net.Client.IntegrationTests.dll --result=MockServer.Net.Client.IntegrationTests.xml;format=AppVeyor
 
 #---------------------------------#
 #      artifacts configuration    #

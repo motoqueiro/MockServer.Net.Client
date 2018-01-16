@@ -5,7 +5,7 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockServer.Net.Client", "MockServer.Net.Client\MockServer.Net.Client.csproj", "{DC3FCF92-FC65-4A83-8EE1-5EF2B028A519}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockServer.Net.Client.UnitTests", "MockServer.Net.Client.Tests\MockServer.Net.Client.UnitTests.csproj", "{EDE738F4-DD3E-43BF-92B2-FC8D08D4CAF3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockServer.Net.Client.UnitTests", "MockServer.Net.Client.UnitTests\MockServer.Net.Client.UnitTests.csproj", "{EDE738F4-DD3E-43BF-92B2-FC8D08D4CAF3}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MockServer.Documentation.Parser", "MockServer.Documentation.Parser\MockServer.Documentation.Parser.csproj", "{29544200-717C-4BD1-9A3E-AEF31C84E7DA}"
 EndProject
