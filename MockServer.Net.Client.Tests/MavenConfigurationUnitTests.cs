@@ -31,7 +31,6 @@
             1080,
             null,
             null,
-            null,
             "-Dmockserver.serverPort=1080 org.mock-server:mockserver-maven-plugin:5.3.0:run")]
         [TestCase(
             MavenGoalEnum.Run,

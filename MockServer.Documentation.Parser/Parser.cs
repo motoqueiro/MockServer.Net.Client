@@ -79,8 +79,9 @@
                 var sampleBodyElement = restApiButtonElement.NextElementSibling.QuerySelector("pre > code");
                 if (sampleBodyElement != null)
                 {
-                    sample.Curl = sampleBodyElement.TextContent;
+                    sample.Curl = sampleBodyElement.TextContent.Replace("\n", string.Empty);
                 }
+
                 yield return sample;
             }
         }

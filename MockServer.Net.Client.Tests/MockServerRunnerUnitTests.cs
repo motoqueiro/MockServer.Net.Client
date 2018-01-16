@@ -3,6 +3,8 @@
     using System;
     using System.Diagnostics;
     using System.IO;
+    using System.Linq;
+    using System.Threading;
     using FluentAssertions;
     using MockServer.Net.Client.RunConfiguration;
     using NUnit.Framework;
@@ -88,13 +90,12 @@
 
             //Act
             runner.Kill();
+            Thread.Sleep(100);
 
             //Assert
-            var process = Process.GetProcessById(processId);
-            process.Should().BeNull();
-            //var exception = Assert.Throws<Exception>(() => Process.GetProcessById(processId));
-            //exception.Should().NotBeNull();
-            //exception.Message.Should().Be("No process is associated with this object");
+            var processes = Process.GetProcesses();
+            var mockServerProcess = processes.SingleOrDefault(p => p.Id == processId);
+            mockServerProcess.Should().BeNull();
         }
 
         private string ResolveJarPath() => Path.Combine(

@@ -12,6 +12,7 @@
 
         public string Curl { get; set; }
 
+
         public string[] CurlParts
         {
             get
@@ -52,6 +53,11 @@
             get
             {
                 var queryParameters = HttpUtility.ParseQueryString(this.Url.Query);
+                if (queryParameters.Count == 0)
+                {
+                    return null;
+                }
+
                 return queryParameters
                     .AllKeys
                     .ToDictionary(k => k, k => queryParameters[k]);
@@ -63,6 +69,11 @@
             get
             {
                 var index = Array.FindIndex(this.CurlParts, cp => cp == "-d");
+                if (index == -1)
+                {
+                    return null;
+                }
+
                 return string.Join(" ", this.CurlParts.Skip(index + 1)).Trim('\'');
             }
         }

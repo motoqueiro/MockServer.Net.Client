@@ -23,6 +23,7 @@
         public void Start()
         {
             this._process.Start();
+            this._process.WaitForExit(50);
             if (this._process.HasExited)
             {
                 throw new Exception($"Unable to start mockserver with {this._configuration.ToString()}");

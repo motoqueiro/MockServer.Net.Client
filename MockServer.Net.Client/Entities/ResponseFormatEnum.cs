@@ -1,6 +1,6 @@
 ﻿namespace MockServer.Net.Client.Entities
 {
-    public enum RetrieveFormatEnum
+    public enum ResponseFormatEnum
     {
         JSON,
         JAVA

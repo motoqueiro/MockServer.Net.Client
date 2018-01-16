@@ -48,8 +48,13 @@ namespace MockServer.Net.Client.UnitTests
         }
 
         [Category("Reset")]
-        [TestCase(200, "expectations and recorded requests cleared", TestName = "ResetRequest_ShouldReturnOk")]
+        [TestCase(null, 200, "expectations and recorded requests cleared", TestName = "ResetRequest_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.ACTIVE_EXPECTATIONS, 200, "expectations and recorded requests cleared", TestName = "ResetRequest_ActiveExpectationsType_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.LOGS, 200, "expectations and recorded requests cleared", TestName = "ResetRequest_LogsType_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.RECORDED_EXPECTATIONS, 200, "expectations and recorded requests cleared", TestName = "ResetRequest_RecordedExpectationsType_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.REQUESTS, 200, "expectations and recorded requests cleared", TestName = "ResetRequest_RequestsType_ShouldReturnOk")]
         public async Task ResetRequestTest(
+            ObjectTypeEnum? type,
             HttpStatusCode status,
             string description)
         {
@@ -57,20 +62,29 @@ namespace MockServer.Net.Client.UnitTests
             this._httpTest.RespondWith(string.Empty, (int)status);
 
             //Act
-            var response = await this._client.Reset();
+            var response = await this._client.Reset(type);
 
             //Assert
             AssertResponse(response, status, description);
+            var callAssertion = this._httpTest
+                .ShouldHaveCalled(this._serverUrl + "reset");
+            if (type.HasValue)
+            {
+                callAssertion.WithQueryParamValue("type", type);
+            }
+
+            callAssertion.WithVerb(HttpMethod.Put);
         }
 
         [Category("Retrieve")]
-        [TestCase(200, "recorded requests or active expectations returned", RetrieveFormatEnum.JSON, RetrieveTypeEnum.REQUESTS, TestName = "RetrieveRequest_ShouldReturnOk")]
-        [TestCase(400, "incorrect request format", RetrieveFormatEnum.JSON, RetrieveTypeEnum.REQUESTS, TestName = "RetrieveRequest_ShouldReturBadRequest")]
+        [TestCase(200, "recorded requests or active expectations returned", ResponseFormatEnum.JSON, ObjectTypeEnum.REQUESTS, TestName = "RetrieveRequest_JsonFormat_RequestsType_ShouldReturnOk")]
+        [TestCase(200, "recorded requests or active expectations returned", ResponseFormatEnum.JSON, ObjectTypeEnum.REQUESTS, TestName = "RetrieveRequest_NullFormat_NullType_ShouldReturnOk")]
+        [TestCase(400, "incorrect request format", ResponseFormatEnum.JSON, ObjectTypeEnum.REQUESTS, TestName = "RetrieveRequest_JsonFormat_RequestsType_ShouldReturBadRequest")]
         public async Task RetrieveRequestTest(
             HttpStatusCode status,
             string description,
-            RetrieveFormatEnum format,
-            RetrieveTypeEnum type)
+            ResponseFormatEnum? format,
+            ObjectTypeEnum? type)
         {
             //Arrange
             this._httpTest.RespondWith(string.Empty, (int)status);
@@ -84,11 +98,17 @@ namespace MockServer.Net.Client.UnitTests
 
             //Assert
             AssertResponse(response, status, description);
-            this._httpTest
-                .ShouldHaveCalled(this._serverUrl + "retrieve")
-                .WithQueryParamValue("format", format)
-                .WithQueryParamValue("type", type)
-                .WithRequestBody(jsonData)
+            var callAssertion = this._httpTest
+                .ShouldHaveCalled(this._serverUrl + "retrieve");
+            if (format.HasValue)
+            {
+                callAssertion.WithQueryParamValue("format", format);
+            }
+            if (type.HasValue)
+            {
+                callAssertion.WithQueryParamValue("type", type);
+            }
+            callAssertion.WithRequestJson(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -149,7 +169,7 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description, jsonData);
             this._httpTest
                 .ShouldHaveCalled(this._serverUrl + "verify")
-                .WithRequestBody(jsonData)
+                .WithRequestJson(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -172,14 +192,19 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description, jsonData);
             this._httpTest
                 .ShouldHaveCalled(this._serverUrl + "verifysequence")
-                .WithRequestBody(jsonData)
+                .WithRequestJson(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
         [Category("Clear")]
-        [TestCase(200, "expectations and recorded requests cleared", TestName = "ClearRequest_ShouldReturnOk")]
-        [TestCase(400, "incorrect request format", TestName = "ClearRequest_ShouldReturnBadRequest")]
+        [TestCase(null, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.ACTIVE_EXPECTATIONS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_ActiveExpectationsType_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.LOGS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_LogsType_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.RECORDED_EXPECTATIONS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_Recorded_ExpectationsType_ShouldReturnOk")]
+        [TestCase(ObjectTypeEnum.REQUESTS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_RequestsType_ShouldReturnOk")]
+        [TestCase(null, 400, "incorrect request format", TestName = "ClearRequest_ShouldReturnBadRequest")]
         public async Task ClearRequestTest(
+            ObjectTypeEnum? type,
             HttpStatusCode status,
             string description)
         {
@@ -188,13 +213,20 @@ namespace MockServer.Net.Client.UnitTests
             this._httpTest.RespondWith(string.Empty, (int)status);
 
             //Act
-            var response = await this._client.Clear(jsonData);
+            var response = await this._client.Clear(
+                jsonData,
+                type);
 
             //Assert
             AssertResponse(response, status, description, jsonData);
-            this._httpTest
-                .ShouldHaveCalled(this._serverUrl + "clear")
-                .WithRequestBody(jsonData)
+            var callAssertion = this._httpTest
+                .ShouldHaveCalled(this._serverUrl + "clear");
+            if (type.HasValue)
+            {
+                callAssertion = callAssertion.WithQueryParamValue(nameof(type), type);
+            }
+
+            callAssertion.WithRequestJson(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -217,7 +249,7 @@ namespace MockServer.Net.Client.UnitTests
             AssertResponse(response, status, description, jsonData);
             this._httpTest
                 .ShouldHaveCalled(this._serverUrl + "bind")
-                .WithRequestBody(jsonData)
+                .WithRequestJson(jsonData)
                 .WithVerb(HttpMethod.Put);
         }
 
@@ -242,8 +274,8 @@ namespace MockServer.Net.Client.UnitTests
         {
             //Arrange
             var jsonData = this._fixture.Generate<string>();
-            var format = RetrieveFormatEnum.JSON;
-            var type = RetrieveTypeEnum.REQUESTS;
+            var format = ResponseFormatEnum.JSON;
+            var type = ObjectTypeEnum.REQUESTS;
             var status = HttpStatusCode.Conflict;
             this._httpTest.RespondWith(string.Empty, (int)status);
 

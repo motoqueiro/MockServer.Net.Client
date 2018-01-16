@@ -2,7 +2,6 @@
 {
     using System.Collections.Generic;
     using System.IO;
-    using System.Threading.Tasks;
     using MockServer.Documentation.Parser.Entities;
     using Newtonsoft.Json;
 
@@ -17,6 +16,7 @@
                 var serializer = new JsonSerializer();
                 serializer.NullValueHandling = NullValueHandling.Include;
                 serializer.Formatting = Formatting.Indented;
+                serializer.ContractResolver = new WritablePropertiesContractResolver();
                 serializer.Serialize(file, sampleCategories);
             }
         }
@@ -26,31 +26,7 @@
             using (StreamReader file = File.OpenText(filePath))
             {
                 JsonSerializer serializer = new JsonSerializer();
-                return (IEnumerable<SampleCategory>) serializer.Deserialize(file, typeof(IEnumerable<SampleCategory>));
-            }
-        }
-
-        private static async Task StoreSampleCatogories(ICollection<SampleCategory> sampleCategories)
-        {
-            var samplesPath = Path.Combine(Directory.GetCurrentDirectory(), "Samples");
-            foreach (var sampleCategory in sampleCategories)
-            {
-                await StoreSample(
-                    samplesPath,
-                    sampleCategory.Samples);
-            }
-        }
-
-        private static async Task StoreSample(
-            string samplesPath,
-            List<Sample> samples)
-        {
-            foreach (var sample in samples)
-            {
-                var sampleActionPath = Path.Combine(samplesPath, sample.Action);
-                Directory.CreateDirectory(sampleActionPath);
-                var samplePath = Path.Combine(sampleActionPath, $"{@sample.Title}.json");
-                await File.WriteAllTextAsync(samplePath, sample.Body);
+                return (IEnumerable<SampleCategory>)serializer.Deserialize(file, typeof(IEnumerable<SampleCategory>));
             }
         }
     }

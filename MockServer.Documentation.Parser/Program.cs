@@ -11,16 +11,21 @@
         {
             try
             {
+                Console.WriteLine("Loading addresses to parse...");
                 var addresses = LoadAddresses().ToArray();
+                Console.WriteLine("Parsing addresses...");
                 var sampleCategories = Parser.Parse(addresses)
                     .GetAwaiter()
                     .GetResult();
                 var filePath = Path.Combine(
                     Directory.GetCurrentDirectory(),
                     "sample_categories.json");
+                Console.WriteLine("Storage file path {0}", filePath);
+                Console.WriteLine("Storing parsed samples...");
                 Storer.Store(
                     filePath,
                     sampleCategories);
+                Console.WriteLine("Parsing complete");
             }
             catch (Exception ex)
             {

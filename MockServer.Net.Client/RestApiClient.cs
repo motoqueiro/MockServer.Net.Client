@@ -9,6 +9,7 @@
     using Entities;
     using Flurl;
     using Flurl.Http;
+    using Newtonsoft.Json.Linq;
 
     public class RestApiClient
     {
@@ -83,18 +84,20 @@
         /// </summary>
         /// <param name="jsonData">Request used to match expectations and recored requests to clear.</param>
         /// <returns></returns>
-        public async Task<Response> Clear(string jsonData)
+        public async Task<Response> Clear(
+            string jsonData,
+            ObjectTypeEnum? type = null)
         {
-            return await this.PutRequest("clear", jsonData);
+            return await this.PutRequest("clear", jsonData, new { type });
         }
 
         /// <summary>
         /// Clears all expectations and recorded requests.
         /// </summary>
         /// <returns></returns>
-        public async Task<Response> Reset()
+        public async Task<Response> Reset(ObjectTypeEnum? type = null)
         {
-            return await this.PutRequest("reset");
+            return await this.PutRequest("reset", null, new { type });
         }
 
         /// <summary>
@@ -106,15 +109,14 @@
         /// <returns></returns>
         public async Task<Response> Retrieve(
             string jsonData,
-            RetrieveFormatEnum format = RetrieveFormatEnum.JSON,
-            RetrieveTypeEnum type = RetrieveTypeEnum.REQUESTS)
+            ResponseFormatEnum? format,
+            ObjectTypeEnum? type)
         {
-            var httpResponse = await this._url
-                .AppendPathSegment("retrieve")
-                .SetQueryParam(nameof(format), format.ToString())
-                .SetQueryParam(nameof(type), type.ToString())
-                .PutJsonAsync(jsonData);
-            return await this.ResolveResponse(nameof(Retrieve), httpResponse);
+            return await this.PutRequest("retrieve", jsonData, new
+            {
+                format,
+                type
+            });
         }
 
         /// <summary>
@@ -133,10 +135,7 @@
         /// <returns></returns>
         public async Task<Response> Bind(string jsonData)
         {
-            var httpResponse = await this._url
-                .AppendPathSegment("bind")
-                .PutJsonAsync(jsonData);
-            return await this.ResolveResponse(nameof(Bind), httpResponse);
+            return await this.PutRequest("bind", jsonData);
         }
 
         /// <summary>
@@ -150,23 +149,41 @@
 
         private async Task<Response> PutRequest(
             string segment,
-            string jsonData = null)
+            string jsonData = null,
+            object queryParameters = null)
+        {
+            var httpResponse = await this.MakeRequest(
+                segment,
+                jsonData,
+                queryParameters);
+            return await this.ResolveResponse(
+                segment,
+                httpResponse);
+        }
+
+        private async Task<HttpResponseMessage> MakeRequest(
+            string segment,
+            string jsonData,
+            object queryParameters)
         {
             var url = this._url
                 .AppendPathSegment(segment);
+            if (queryParameters != null)
+            {
+                url.SetQueryParams(queryParameters, NullValueHandling.Remove);
+            }
+
             var httpResponse = (HttpResponseMessage)null;
             if (!string.IsNullOrEmpty(jsonData))
             {
-                httpResponse = await url.PutStringAsync(jsonData);
+                httpResponse = await url.PutJsonAsync(jsonData);
             }
             else
             {
                 httpResponse = await url.PutAsync(null);
             }
 
-            return await this.ResolveResponse(
-                segment,
-                httpResponse);
+            return httpResponse;
         }
 
         private async Task<Response> ResolveResponse(
