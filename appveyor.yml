@@ -64,7 +64,15 @@ build_script:
 test:
   assemblies:
     only:
-      - '**\*Tests.dll'
+      - "./MockServer.Net.Client.UnitTests/MockServer.Net.Client.UnitTests.dll"
+
+#---------------------------------#
+#      artifacts configuration    #
+#---------------------------------#
+
+artifacts:
+  # pushing all *.nupkg files in build directory recursively
+  - path: '**\*.nupkg'
 
 #---------------------------------#
 #     deployment configuration    #
