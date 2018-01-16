@@ -1,9 +1,0 @@
-{
- "httpRequest": {
- "path": "/simple"
- },
- "times": {
- "count": 1,
- "exact": true
- }
-}

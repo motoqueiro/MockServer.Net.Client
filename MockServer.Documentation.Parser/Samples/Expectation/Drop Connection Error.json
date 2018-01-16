@@ -1,8 +1,0 @@
-{
- "httpRequest" : {
- "path" : "/some/path"
- },
- "httpError" : {
- "dropConnection" : true
- }
-}

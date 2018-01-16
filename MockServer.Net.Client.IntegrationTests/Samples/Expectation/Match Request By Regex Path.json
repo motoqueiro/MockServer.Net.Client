@@ -1,8 +1,0 @@
-{
- "httpRequest" : {
- "path" : "/some.*"
- },
- "httpResponse" : {
- "body" : "some_response_body"
- }
-}

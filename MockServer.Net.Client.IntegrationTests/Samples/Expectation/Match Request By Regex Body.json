@@ -1,8 +1,0 @@
-{
- "httpRequest" : {
- "body" : "starts_with_.*"
- },
- "httpResponse" : {
- "body" : "some_response_body"
- }
-}
