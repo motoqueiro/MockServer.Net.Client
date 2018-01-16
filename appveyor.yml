@@ -55,7 +55,7 @@ nuget:
 # to run your custom scripts instead of automatic MSBuild
 build_script:
   - cmd: dotnet build --configuration Release --verbosity minimal
-  - cmd: dotnet pack ~/MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-build --verbosity minimal
+  - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-build --verbosity minimal
 
 #---------------------------------#
 #       tests configuration       #
