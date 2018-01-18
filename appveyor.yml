@@ -52,16 +52,16 @@ nuget:
 #---------------------------------#
 # to run your custom scripts instead of automatic MSBuild
 build_script:
-  - cmd: dotnet build --configuration Release --verbosity minimal
-  - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-restore --no-build --verbosity minimal
+  - cmd: dotnet build --configuration Release --verbosity quiet
+  - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-restore --no-build --verbosity quiet
 
 #---------------------------------#
 #       tests configuration       #
 #---------------------------------#
 # to run tests again only selected assemblies and/or categories
 test_script:
-  - dotnet test ./MockServer.Net.Client.UnitTests/MockServer.Net.Client.UnitTests.csproj --configuration Release --verbosity minimal
-#  - dotnet test ./MockServer.Net.Client.IntegrationTests/MockServer.Net.Client.IntegrationTests.csproj --configuration Release --list-tests --verbosity minimal
+  - dotnet test ./MockServer.Net.Client.UnitTests/MockServer.Net.Client.UnitTests.csproj --configuration Release --verbosity detailed
+  - dotnet test ./MockServer.Net.Client.IntegrationTests/MockServer.Net.Client.IntegrationTests.csproj --configuration Release --list-tests --verbosity detailed
 
 #---------------------------------#
 #      artifacts configuration    #
