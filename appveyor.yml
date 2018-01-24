@@ -37,9 +37,10 @@ build_script:
   - cmd: dotnet build --configuration Release --verbosity quiet
   - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-restore --no-build --verbosity quiet
 
-test_script:
-  - dotnet test ./MockServer.Net.Client.UnitTests/MockServer.Net.Client.UnitTests.csproj --configuration Release  --verbosity detailed --results-directory TestResults
-#  - dotnet test ./MockServer.Net.Client.IntegrationTests/MockServer.Net.Client.IntegrationTests.csproj --configuration Release --list-tests --verbosity detailed
+test:
+  assemblies:
+    only:
+      - '**\*.UnitTests.dll'
 
 artifacts:
   - path: '**\*.nupkg'
