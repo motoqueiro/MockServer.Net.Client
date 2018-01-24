@@ -35,12 +35,15 @@ nuget:
 
 build_script:
   - cmd: dotnet build --configuration Release --verbosity quiet
-  - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-restore --no-build --verbosity quiet
+  - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-restore --no-build --verbosity quiet /p:PackageVersion={version}
 
 test:
   assemblies:
     only:
-      - '**\*.UnitTests.dll'
+      - '**\*Tests.dll'
+  categories:
+    only:
+      - Unit Tests
 
 artifacts:
   - path: '**\*.nupkg'
