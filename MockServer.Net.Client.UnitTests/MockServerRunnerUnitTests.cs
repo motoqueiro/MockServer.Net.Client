@@ -12,6 +12,7 @@
 
     [TestFixture]
     [Category("Mock Server Runner")]
+    [Category("Unit Tests")]
     public class MockServerRunnerUnitTests
     {
         private Fixture _fixture;

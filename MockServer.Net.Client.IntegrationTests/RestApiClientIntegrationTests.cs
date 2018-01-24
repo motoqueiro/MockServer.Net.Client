@@ -36,7 +36,7 @@
         [OneTimeTearDown]
         public void OneTimeTearDown()
         {
-            this._runner.Dispose();
+            this._runner?.Dispose();
         }
 
         [TestCaseSource(
@@ -44,6 +44,7 @@
             "LoadTestCasesByAction",
             new object[] { "Expectation" },
             Category = "Expectation")]
+        [Order(1)]
         public async Task CreateExpectation(string jsonData)
         {
             //Act
@@ -62,6 +63,7 @@
             "LoadTestCasesByAction",
             new object[] { "Verify" },
             Category = "Verify")]
+        [Order(2)]
         public async Task Verify(string jsonData)
         {
             //Act
@@ -79,6 +81,7 @@
             "LoadTestCasesByAction",
             new object[] { "VerifySequece" },
             Category = "VerifySequence")]
+        [Order(3)]
         public async Task VerifySequence(string jsonData)
         {
             //Act
@@ -96,6 +99,7 @@
             "LoadTestCasesByAction",
             new object[] { "Clear" },
             Category = "Clear")]
+        [Order(6)]
         public async Task Clear(
             string jsonData,
             string typeRaw = null)
@@ -120,6 +124,7 @@
             "LoadTestCasesByAction",
             new object[] { "Reset" },
             Category = "Reset")]
+        [Order(7)]
         public async Task Reset(string typeRaw = null)
         {
             //Arrange
@@ -140,6 +145,7 @@
             "LoadTestCasesByAction",
             new object[] { "Retrieve" },
             Category = "Retrieve")]
+        [Order(5)]
         public async Task Retrieve(
             string jsonData,
             string formatRaw = "JSON",
@@ -181,6 +187,7 @@
             "LoadTestCasesByAction",
             new object[] { "Bind" },
             Category = "Bind")]
+        [Order(9)]
         public async Task Bind(string jsonData)
         {
             //Act
@@ -189,14 +196,13 @@
             //Assert
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.OK);
-            result.Description.Should().Be("listening on additional requested ports, note: the response ony contains ports added for the request, to list all ports use /status");
+            result.Description.Should().Be("listening on additional requested ports, note: the response only contains ports added for the request, to list all ports use /status");
             Assert.Warn(result.Content);
             result.Content.Should().NotBeNull();
         }
 
         [Test]
-        [Ignore("Debug integration tests failling")]
-        [Order(9)]
+        [Order(10)]
         public async Task IntegrationTest_Stop()
         {
             //Act
@@ -218,8 +224,7 @@
             return await File.ReadAllTextAsync(path);
         }
 
-        private Nullable<T> ParseNullableEnum<T>(string typeRaw)
-                    where T : struct
+        private Nullable<T> ParseNullableEnum<T>(string typeRaw) where T : struct
         {
             if (string.IsNullOrEmpty(typeRaw))
             {

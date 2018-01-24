@@ -1,42 +1,14 @@
 ﻿namespace MockServer.Net.Client.UnitTests
 {
-    using FluentAssertions;
     using MockServer.Net.Client.Entities;
     using MockServer.Net.Client.RunConfiguration;
     using NUnit.Framework;
-    using SimpleFixture;
 
     [TestFixture]
     [Category("Java Configuration")]
     [Category("Unit Tests")]
     public class JavaConfigurationUnitTests
     {
-        private Fixture _fixture;
-
-        [SetUp]
-        public void SetUp()
-        {
-            this._fixture = new Fixture();
-        }
-
-        [Test]
-        public void FileName_ShouldBeJava()
-        {
-            //Arrange
-            var jarPath = this._fixture.Generate<string>();
-            var serverPort = this._fixture.Generate<int>();
-
-            //Act
-            var javaConfiguration = new JavaConfiguration(
-                jarPath,
-                serverPort);
-
-            //Assert
-            javaConfiguration.FileName.Should().Be("java");
-            javaConfiguration.JarPath.Should().Be(jarPath);
-            javaConfiguration.ServerPort.Should().Be(serverPort);
-        }
-
         [TestCase(
             "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
@@ -46,7 +18,9 @@
             null,
             null,
             null,
-            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080")]
+            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080",
+            "http://localhost:1080",
+            null)]
         [TestCase(
             "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
@@ -56,7 +30,9 @@
             null,
             null,
             null,
-            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
+            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090",
+            "http://localhost:1080",
+            "http://localhost:1090")]
         [TestCase(
             "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
@@ -66,7 +42,9 @@
             null,
             null,
             null,
-            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090 -proxyRemotePort 80 -proxyRemoteHost www.mock-server.com")]
+            "-jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090 -proxyRemotePort 80 -proxyRemoteHost www.mock-server.com",
+            "http://localhost:1080",
+            "www.mock-server.com:80")]
         [TestCase(
             "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
@@ -76,7 +54,9 @@
             LogLevelEnum.INFO,
             null,
             null,
-            "-Dmockserver.logLevel=INFO -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
+            "-Dmockserver.logLevel=INFO -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090",
+            "http://localhost:1080",
+            "http://localhost:1090")]
         [TestCase(
             "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
@@ -86,7 +66,9 @@
             LogLevelEnum.INFO,
             LogLevelEnum.WARN,
             null,
-            "-Droot.logLevel=WARN -Dmockserver.logLevel=INFO -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
+            "-Droot.logLevel=WARN -Dmockserver.logLevel=INFO -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090",
+            "http://localhost:1080",
+            "http://localhost:1090")]
         [TestCase(
             "mockserver-netty-5.3.0-jar-with-dependencies.jar",
             1080,
@@ -96,7 +78,9 @@
             LogLevelEnum.INFO,
             LogLevelEnum.WARN,
             "example_logback.xml",
-            "-Droot.logLevel=WARN -Dmockserver.logLevel=INFO -Dlogback.configurationFile=example_logback.xml -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090")]
+            "-Droot.logLevel=WARN -Dmockserver.logLevel=INFO -Dlogback.configurationFile=example_logback.xml -jar mockserver-netty-5.3.0-jar-with-dependencies.jar -serverPort 1080 -proxyPort 1090",
+            "http://localhost:1080",
+            "http://localhost:1090")]
         [Category("Command Line Arguments")]
         public void CommandLineArguments_ShouldBeValid(
             string jarPath,
@@ -107,9 +91,11 @@
             LogLevelEnum? logLevel,
             LogLevelEnum? rootLogLevel,
             string logLevelConfigurationFilePath,
-            string expectedArguments)
+            string expectedArguments,
+            string expectedRestApiUrl,
+            string expectedProxyUrl)
         {
-            //Arrange
+            //Act
             var configuration = new JavaConfiguration(
                 jarPath,
                 serverPort,
@@ -120,16 +106,20 @@
                 rootLogLevel,
                 logLevelConfigurationFilePath);
 
-            //Act
-            var arguments = configuration.BuildCommandLineArguments();
-
             //Assert
-            arguments.Should().Be(expectedArguments);
-            configuration.ServerPort.Should().Be(serverPort);
-            configuration.ProxyPort.Should().Be(proxyPort);
-            configuration.ProxyRemotePort.Should().Be(proxyRemotePort);
-            configuration.ProxyRemoteHost.Should().Be(proxyRemoteHost);
-            configuration.LogLevel.Should().Be(logLevel);
+            AssertHelper.AssertJavaConfiguration(
+                configuration,
+                jarPath,
+                serverPort,
+                proxyPort,
+                proxyRemotePort,
+                proxyRemoteHost,
+                logLevel,
+                rootLogLevel,
+                logLevelConfigurationFilePath,
+                expectedArguments,
+                expectedRestApiUrl,
+                expectedProxyUrl);
         }
     }
 }

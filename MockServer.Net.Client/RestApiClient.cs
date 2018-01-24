@@ -9,11 +9,10 @@
     using Entities;
     using Flurl;
     using Flurl.Http;
-    using Newtonsoft.Json.Linq;
 
     public class RestApiClient
     {
-        private readonly string _url;
+        public string Url { get; private set; }
 
         private static List<Tuple<string, HttpStatusCode, string>> Responses;
 
@@ -46,7 +45,7 @@
 
         public RestApiClient(string serverUrl)
         {
-            this._url = serverUrl;
+            this.Url = serverUrl;
         }
 
         /// <summary>
@@ -166,7 +165,7 @@
             string jsonData,
             object queryParameters)
         {
-            var url = this._url
+            var url = this.Url
                 .AppendPathSegment(segment);
             if (queryParameters != null)
             {

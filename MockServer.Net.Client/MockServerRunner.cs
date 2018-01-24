@@ -32,6 +32,8 @@
 
         public string RestApiUrl => this._configuration.RestApiUrl;
 
+        public string ProxyUrl => this._configuration.ProxyUrl;
+
         public int ProcessId => this._process.Id;
 
         public void Kill() => this._process?.Kill();

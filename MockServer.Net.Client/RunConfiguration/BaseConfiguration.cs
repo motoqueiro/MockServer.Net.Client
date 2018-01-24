@@ -1,6 +1,7 @@
 ﻿namespace MockServer.Net.Client.RunConfiguration
 {
     using System.Diagnostics;
+    using System.Text;
     using Entities;
 
     public abstract class BaseConfiguration
@@ -31,11 +32,49 @@
 
         public abstract string FileName { get; }
 
-        public virtual string Domain => string.IsNullOrEmpty(this.ProxyRemoteHost) ? "http://localhost" : this.ProxyRemoteHost;
+        public string RestApiUrl
+        {
+            get
+            {
+                if (!this.ServerPort.HasValue
+                    && !this.ProxyPort.HasValue)
+                {
+                    return null;
+                }
 
-        public virtual int Port => this.ProxyRemotePort ?? this.ProxyPort ?? this.ServerPort ?? 1080;
+                var sb = new StringBuilder();
+                sb.Append("http://localhost:");
+                if (this.ServerPort.HasValue)
+                {
+                    sb.Append(this.ServerPort);
+                }
+                else
+                {
+                    sb.Append(this.ProxyPort);
+                }
 
-        public virtual string RestApiUrl => $"{this.Domain}:{this.Port}";
+                return sb.ToString();
+            }
+        }
+
+        public string ProxyUrl
+        {
+            get
+            {
+                if (!string.IsNullOrEmpty(this.ProxyRemoteHost)
+                    && this.ProxyRemotePort.HasValue)
+                {
+                    return $"{this.ProxyRemoteHost}:{this.ProxyRemotePort}";
+                }
+
+                if (this.ProxyPort.HasValue)
+                {
+                    return $"http://localhost:{this.ProxyPort.Value}";
+                }
+
+                return null;
+            }
+        }
 
         public abstract string BuildCommandLineArguments();
 

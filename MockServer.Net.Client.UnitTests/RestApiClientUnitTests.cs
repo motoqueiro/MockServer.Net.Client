@@ -11,6 +11,7 @@ namespace MockServer.Net.Client.UnitTests
     using SimpleFixture;
 
     [TestFixture]
+    [Category("Rest API Client")]
     [Category("Unit Tests")]
     public class RestApiClientUnitTests
     {
