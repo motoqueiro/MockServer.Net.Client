@@ -40,7 +40,7 @@ build_script:
 test:
   assemblies:
     only:
-      - '**\*Tests.dll'
+      - MockServer.Net.Client.UnitTests\bin\Release\netcoreapp2.0\MockServer.Net.Client.UnitTests.dll
   categories:
     only:
       - Unit Tests
