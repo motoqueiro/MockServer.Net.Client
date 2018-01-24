@@ -9,6 +9,8 @@
     <Authors>Tiago Coutinho Monteiro</Authors>
     <Company />
     <Description>MockServer Rest API Client for .Net</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Version>1.0.0</Version>
   </PropertyGroup>
 
   <ItemGroup>

@@ -21,7 +21,7 @@ image:
 
 dotnet_csproj:
   patch: true
-  file: "**\\*.csproj"
+  file: '**\*.csproj'
   version: "{version}"
   package_version: "{version}"
   assembly_version: "{version}"
@@ -35,7 +35,7 @@ nuget:
 
 build_script:
   - cmd: dotnet build --configuration Release --verbosity quiet
-  - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-restore --no-build --verbosity quiet /p:PackageVersion={version}
+  - cmd: dotnet pack ./MockServer.Net.Client/MockServer.Net.Client.csproj --configuration Release --no-restore --no-build --verbosity quiet
 
 test:
   assemblies:
