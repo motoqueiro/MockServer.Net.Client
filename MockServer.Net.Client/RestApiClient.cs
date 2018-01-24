@@ -36,7 +36,7 @@
                 { new Tuple<string, HttpStatusCode, string>("retrieve", HttpStatusCode.OK, "recorded requests or active expectations returned") },
                 { new Tuple<string, HttpStatusCode, string>("retrieve", HttpStatusCode.BadRequest, "incorrect request format") },
                 { new Tuple<string, HttpStatusCode, string>("status", HttpStatusCode.OK, "MockServer is running and listening on the listed ports") },
-                { new Tuple<string, HttpStatusCode, string>("bind", HttpStatusCode.OK, "listening on additional requested ports, note: the response ony contains ports added for the request, to list all ports use /status") },
+                { new Tuple<string, HttpStatusCode, string>("bind", HttpStatusCode.OK, "listening on additional requested ports, note: the response only contains ports added for the request, to list all ports use /status") },
                 { new Tuple<string, HttpStatusCode, string>("bind", HttpStatusCode.BadRequest, "incorrect request format") },
                 { new Tuple<string, HttpStatusCode, string>("bind", HttpStatusCode.NotAcceptable, "unable to bind to ports (i.e. already bound or JVM process doesn't have permission)") },
                 { new Tuple<string, HttpStatusCode, string>("stop", HttpStatusCode.OK, "MockServer process is stopping") }
@@ -175,7 +175,7 @@
             var httpResponse = (HttpResponseMessage)null;
             if (!string.IsNullOrEmpty(jsonData))
             {
-                httpResponse = await url.PutJsonAsync(jsonData);
+                httpResponse = await url.PutStringAsync(jsonData);
             }
             else
             {

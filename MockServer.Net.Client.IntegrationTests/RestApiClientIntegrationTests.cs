@@ -54,7 +54,6 @@
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.Created);
             result.Description.Should().Be("expectation created");
-            Assert.Warn(result.Content);
             result.Content.Should().Be(string.Empty);
         }
 
@@ -148,8 +147,8 @@
         [Order(5)]
         public async Task Retrieve(
             string jsonData,
-            string formatRaw = "JSON",
-            string typeRaw = "REQUESTS")
+            string typeRaw = "REQUESTS",
+            string formatRaw = "JSON")
         {
             //Arrange
             var type = this.ParseNullableEnum<ObjectTypeEnum>(typeRaw);
@@ -197,7 +196,6 @@
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.OK);
             result.Description.Should().Be("listening on additional requested ports, note: the response only contains ports added for the request, to list all ports use /status");
-            Assert.Warn(result.Content);
             result.Content.Should().NotBeNull();
         }
 
