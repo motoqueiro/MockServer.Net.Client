@@ -73,8 +73,10 @@
                 {
                     return null;
                 }
-
-                return string.Join(" ", this.CurlParts.Skip(index + 1)).Trim('\'');
+                var body = string.Join(" ", this.CurlParts.Skip(index + 1))
+                    .Trim('\'')
+                    .Replace("\" + \"", string.Empty);
+                return body;
             }
         }
     }

@@ -25,6 +25,12 @@
                 Storer.Store(
                     filePath,
                     sampleCategories);
+                var testCaseFile = Path.Combine(
+                    Directory.GetCurrentDirectory(),
+                    "test_case.txt");
+                Storer.GenerateTestCases(
+                    testCaseFile,
+                    sampleCategories);
                 Console.WriteLine("Parsing complete");
             }
             catch (Exception ex)

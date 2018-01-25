@@ -199,13 +199,12 @@ namespace MockServer.Net.Client.UnitTests
 
         [Category("Clear")]
         [TestCase(null, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_ShouldReturnOk")]
-        [TestCase(ObjectTypeEnum.ACTIVE_EXPECTATIONS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_ActiveExpectationsType_ShouldReturnOk")]
-        [TestCase(ObjectTypeEnum.LOGS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_LogsType_ShouldReturnOk")]
-        [TestCase(ObjectTypeEnum.RECORDED_EXPECTATIONS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_Recorded_ExpectationsType_ShouldReturnOk")]
-        [TestCase(ObjectTypeEnum.REQUESTS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_RequestsType_ShouldReturnOk")]
+        [TestCase(ClearTypeEnum.EXPECTATIONS, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_ExpectationsType_ShouldReturnOk")]
+        [TestCase(ClearTypeEnum.ALL, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_AllType_ShouldReturnOk")]
+        [TestCase(ClearTypeEnum.LOG, 200, "expectations and recorded requests cleared", TestName = "ClearRequest_LogType_ShouldReturnOk")]
         [TestCase(null, 400, "incorrect request format", TestName = "ClearRequest_ShouldReturnBadRequest")]
         public async Task ClearRequestTest(
-            ObjectTypeEnum? type,
+            ClearTypeEnum? type,
             HttpStatusCode status,
             string description)
         {

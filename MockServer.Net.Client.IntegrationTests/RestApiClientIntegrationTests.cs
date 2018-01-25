@@ -54,7 +54,7 @@
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.Created);
             result.Description.Should().Be("expectation created");
-            result.Content.Should().Be(string.Empty);
+            result.Content.Should().BeEmpty();
         }
 
         [TestCaseSource(
@@ -70,9 +70,18 @@
 
             //Assert
             result.Should().NotBeNull();
-            result.Code.Should().Be(HttpStatusCode.OK);
-            result.Description.Should().Be("matching request has been received specified number of times");
-            result.Content.Should().Be(string.Empty);
+            if (TestContext.CurrentContext.Test.Name.Contains("Verify Requests Never Received"))
+            {
+                result.Code.Should().Be(HttpStatusCode.Accepted);
+                result.Description.Should().Be("matching request has been received specified number of times");
+                result.Content.Should().BeNullOrEmpty();
+            }
+            else
+            {
+                result.Code.Should().Be(HttpStatusCode.NotAcceptable);
+                result.Description.Should().Be("request has not been received specified numbers of times");
+                result.Content.Should().NotBeNullOrEmpty();
+            }
         }
 
         [TestCaseSource(
@@ -90,7 +99,7 @@
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.Accepted);
             result.Description.Should().Be("request sequence has been received in specified order");
-            result.Content.Should().Be(string.Empty);
+            result.Content.Should().BeEmpty();
         }
 
         [TestCaseSource(
@@ -104,7 +113,7 @@
             string typeRaw = null)
         {
             //Arrange
-            var type = this.ParseNullableEnum<ObjectTypeEnum>(typeRaw);
+            var type = this.ParseNullableEnum<ClearTypeEnum>(typeRaw);
 
             //Act
             var result = await this._client.Clear(
@@ -115,7 +124,7 @@
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.OK);
             result.Description.Should().Be("expectations and recorded requests cleared");
-            result.Content.Should().Be(string.Empty);
+            result.Content.Should().BeEmpty();
         }
 
         [TestCaseSource(
@@ -136,9 +145,9 @@
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.OK);
             result.Description.Should().Be("expectations and recorded requests cleared");
-            result.Content.Should().Be(string.Empty);
+            result.Content.Should().BeEmpty();
         }
-
+        
         [TestCaseSource(
             typeof(IntegrationTestCaseData),
             "LoadTestCasesByAction",
@@ -163,8 +172,8 @@
             //Assert
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.OK);
-            result.Description.Should().Be("expectations and recorded requests cleared");
-            result.Content.Should().NotBeNull();
+            result.Description.Should().Be("recorded requests or active expectations returned");
+            result.Content.Should().BeNullOrEmpty();
         }
 
         [Test]
@@ -210,16 +219,7 @@
             result.Should().NotBeNull();
             result.Code.Should().Be(HttpStatusCode.OK);
             result.Description.Should().Be("MockServer process is stopping");
-            result.Content.Should().Be(string.Empty);
-        }
-
-        private async Task<string> ReadJsonFile(string fileName)
-        {
-            var path = Path.Combine(
-                Directory.GetCurrentDirectory(),
-                "JsonData",
-                fileName);
-            return await File.ReadAllTextAsync(path);
+            result.Content.Should().BeEmpty();
         }
 
         private Nullable<T> ParseNullableEnum<T>(string typeRaw) where T : struct

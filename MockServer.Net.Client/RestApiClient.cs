@@ -24,7 +24,7 @@
                 { new Tuple<string, HttpStatusCode, string>("expectation", HttpStatusCode.Created, "expectation created") },
                 { new Tuple<string, HttpStatusCode, string>("expectation", HttpStatusCode.BadRequest, "incorrect request format") },
                 { new Tuple<string, HttpStatusCode, string>("expectation", HttpStatusCode.NotAcceptable, "invalid expectation") },
-                { new Tuple<string, HttpStatusCode, string>("verify", HttpStatusCode.OK, "matching request has been received specified number of times") },
+                { new Tuple<string, HttpStatusCode, string>("verify", HttpStatusCode.Accepted, "matching request has been received specified number of times") },
                 { new Tuple<string, HttpStatusCode, string>("verify", HttpStatusCode.BadRequest, "incorrect request format") },
                 { new Tuple<string, HttpStatusCode, string>("verify", HttpStatusCode.NotAcceptable, "request has not been received specified numbers of times") },
                 { new Tuple<string, HttpStatusCode, string>("verifySequence", HttpStatusCode.Accepted, "request sequence has been received in specified order") },
@@ -85,7 +85,7 @@
         /// <returns></returns>
         public async Task<Response> Clear(
             string jsonData,
-            ObjectTypeEnum? type = null)
+            ClearTypeEnum? type = null)
         {
             return await this.PutRequest("clear", jsonData, new { type });
         }

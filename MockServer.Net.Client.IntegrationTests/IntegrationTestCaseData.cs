@@ -1,5 +1,6 @@
 ﻿namespace MockServer.Net.Client.IntegrationTests
 {
+    using System;
     using System.Collections;
     using System.Collections.Generic;
     using System.IO;
@@ -10,11 +11,18 @@
 
     internal class IntegrationTestCaseData
     {
+        private static IEnumerable<string> InvalidSamplesToEscape = new string[] {
+            "Match Request By Body Sub-String",
+            "Response Literal With Body Only",
+            "Response Literal With Status Code And Reason Phrase",
+            "Response Literal With UTF16 Body" };
+
         public static IEnumerable LoadTestCasesByAction(string action)
         {
             var actionSamples = LoadTestCaseDataFromJson()
                 .SelectMany(sc => sc.Samples)
-                .Where(s => s.Action == action);
+                .Where(s => s.Action == action
+                    && !InvalidSamplesToEscape.Contains(s.Title));
             foreach (var sample in actionSamples)
             {
                 var arguments = new List<object>();
